@@ -130,7 +130,7 @@
     <configuration
       Name="Debug"
       arm_linker_check_cmse_import_library_file_name=""
-      arm_linker_variant="SEGGER"
+      arm_linker_variant="GNU"
       linker_additional_files="$(SolutionDir)/secure/$(OutDir)/secure_nsc.elf"
       linker_section_placement_file="$(ProjectDir)/nRF9160_xxAA_section_placement.xml" />
     <folder Name="FreeRTOS">
