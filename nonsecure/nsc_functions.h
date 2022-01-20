@@ -24,27 +24,27 @@
  *
  */
 
-#include <arm_cmse.h>
-#include "NSCFunctions.h"
-#include "secure_port_macros.h"
+#ifndef __NSC_FUNCTIONS_H__
+#define __NSC_FUNCTIONS_H__
 
-uint32_t func1( uint32_t value )
-{
-  return value;
-}
+#include <stdint.h>
 
-uint32_t func2( uint32_t value )
-{
-  return value << 1;
-}
+/**
+ * @brief Callback function pointer definition.
+ */
+typedef void ( * Callback_t ) ( void );
 
-/* Non secure callable functions. */
-secureportNON_SECURE_CALLABLE uint32_t entry1( uint32_t value )
-{
-  return func1( value );
-}
+/**
+ * @brief Invokes the supplied callback which is on the non-secure side.
+ *
+ * Returns a number which is one more than the value returned in previous
+ * invocation of this function. Initial invocation returns 1.
+ *
+ * @param pxCallback[in] The callback to invoke.
+ *
+ * @return A number which is one more than the value returned in previous
+ * invocation of this function.
+ */
+uint32_t NSCFunction( Callback_t pxCallback );
 
-secureportNON_SECURE_CALLABLE uint32_t entry2( uint32_t value )
-{
-  return func2( value );
-}
+#endif /* __NSC_FUNCTIONS_H__ */
