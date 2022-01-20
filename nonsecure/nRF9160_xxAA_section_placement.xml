@@ -5,6 +5,8 @@
     <ProgramSection alignment="4" load="Yes" name=".init" />
     <ProgramSection alignment="4" load="Yes" name=".init_rodata" />
     <ProgramSection alignment="4" load="Yes" name=".text" />
+    <ProgramSection alignment="4" Load="Yes" name="privileged_functions" />
+    <ProgramSection alignment="4" Load="Yes" name="freertos_system_calls" />
     <ProgramSection alignment="4" load="Yes" name=".dtors" />
     <ProgramSection alignment="4" load="Yes" name=".ctors" />
     <ProgramSection alignment="4" load="Yes" name=".rodata" />
@@ -18,6 +20,7 @@
     <ProgramSection alignment="4" load="No" name=".fast_run" />
     <ProgramSection alignment="4" load="No" name=".data_run" />
     <ProgramSection alignment="4" load="No" name=".bss" />
+    <ProgramSection alignment="4" Load="No" name="privileged_data" />
     <ProgramSection alignment="4" load="No" name=".tbss" />
     <ProgramSection alignment="4" load="No" name=".tdata_run" />
     <ProgramSection alignment="4" load="No" name=".non_init" />

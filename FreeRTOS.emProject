@@ -143,6 +143,7 @@
       <file file_name="../lib/FreeRTOS/Source/timers.c" />
       <file file_name="../lib/FreeRTOS/Source/portable/GCC/ARM_CM33/non_secure/port.c" />
       <file file_name="../lib/FreeRTOS/Source/portable/GCC/ARM_CM33/non_secure/portasm.c" />
+      <file file_name="../lib/FreeRTOS/Source/portable/Common/mpu_wrappers.c" />
     </folder>
   </project>
   <configuration Name="Common" />
