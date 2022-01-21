@@ -42,12 +42,6 @@
 static void prvCreateTasks( void );
 
 /**
- * @brief Application-specific implementation of the SystemInit() weak
- * function.
- */
-void SystemInit( void );
-
-/**
  * @brief The mem fault handler.
  *
  * It calls a function called vHandleMemoryFault.
@@ -64,8 +58,6 @@ extern uint32_t __UNPRIVILEGED_FLASH_segment_end__[];
 extern uint32_t __PRIVILEGED_RAM_segment_start__[];
 extern uint32_t __PRIVILEGED_RAM_segment_end__[];
 
-uint32_t * __privileged_functions_start__ = ( uint32_t * )&( __PRIVILEGED_FLASH_segment_start__ );
-uint32_t * __privileged_functions_end__ = ( uint32_t * )( ( uint8_t * )&( __PRIVILEGED_FLASH_segment_end__) - 1 );
 uint32_t * __syscalls_flash_start__ = ( uint32_t * )&( __SYSCALLS_FLASH_segment_start__ );
 uint32_t * __syscalls_flash_end__ = ( uint32_t * )( ( uint8_t * )&( __SYSCALLS_FLASH_segment_end__ ) - 1 );
 uint32_t * __unprivileged_flash_start__ = ( uint32_t * )&( __UNPRIVILEGED_FLASH_segment_start__ );

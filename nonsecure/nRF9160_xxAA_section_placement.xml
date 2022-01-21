@@ -5,6 +5,7 @@
     <ProgramSection alignment="4" load="Yes" name=".init" />
     <ProgramSection alignment="4" load="Yes" name=".init_rodata" />
     <ProgramSection alignment="4" load="Yes" name="privileged_functions" />
+    <ProgramSection alignment="32" load="Yes" runin="privileged_data_run" name="privileged_data" />
   </MemorySegment>
   <MemorySegment name="$(FLASH_NAME:SYSCALLS_FLASH);SYSCALLS_FLASH">
     <ProgramSection alignment="32" load="Yes" name="freertos_system_calls" />
@@ -21,7 +22,7 @@
   </MemorySegment>
   <MemorySegment name="$(RAM_NAME:PRIVILEGED_RAM);SRAM;PRIVILEGED_RAM">
     <ProgramSection alignment="32" load="No" name=".vectors_ram" start="$(RAM_START:$(SRAM_START:))" />
-    <ProgramSection alignment="32" load="No" name="privileged_data" />
+    <ProgramSection alignment="32" load="No" name="privileged_data_run" />
   </MemorySegment>
   <MemorySegment name="$(RAM_NAME:UNPRIVILEGED_RAM);UNPRIVILEGED_RAM">
     <ProgramSection alignment="4" load="No" name=".fast_run" />
