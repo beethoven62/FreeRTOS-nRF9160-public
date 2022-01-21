@@ -1,5 +1,8 @@
 <!DOCTYPE Board_Memory_Definition_File>
 <root name="nRF9160_xxAA">
-  <MemorySegment name="FLASH1" start="0x00010000" size="0x000f0000" access="ReadOnly" />
-  <MemorySegment name="RAM1" start="0x20008000" size="0x00036000" access="Read/Write" />
+  <MemorySegment name="PRIVILEGED_FLASH" start="0x00010000" size="0x00010000" access="ReadOnly" />
+  <MemorySegment name="SYSCALLS_FLASH" start="0x00020000" size="0x00010000" access="ReadOnly" />
+  <MemorySegment name="UNPRIVILEGED_FLASH" start="0x00030000" size="0x000D0000" access="ReadOnly" />
+  <MemorySegment name="PRIVILEGED_RAM" start="0x20008000" size="0x00010000" access="Read/Write" />
+  <MemorySegment name="UNPRIVILEGED_RAM" start="0x20018000" size="0x00026000" access="Read/Write" />
 </root>

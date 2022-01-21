@@ -94,7 +94,7 @@
       arm_linker_heap_size="0"
       arm_linker_process_stack_size="0"
       arm_linker_stack_size="2048"
-      arm_linker_variant="SEGGER"
+      arm_linker_variant="GNU"
       arm_rtl_variant="SEGGER"
       arm_simulator_memory_simulation_parameter="ROM;0x00000000;0x00100000;RAM;0x20000000;0x0003E000"
       arm_target_debug_interface_type="ADIv5"
@@ -107,7 +107,6 @@
       debug_start_from_entry_point_symbol="No"
       debug_target_connection="J-Link"
       gcc_entry_point="Reset_Handler"
-      link_linker_script_file="$(ProjectDir)/nRF_Flash.icf"
       linker_memory_map_file="$(ProjectDir)/nRF9160_xxAA_MemoryMap.xml"
       linker_output_format="hex"
       macros="DeviceHeaderFile=$(PackagesDir)/nRF/Device/Include/nrf.h;DeviceLibraryIdentifier=ARMv8MMLlfsp;DeviceSystemFile=$(PackagesDir)/nRF/Device/Source/system_nrf9160.c;DeviceVectorsFile=$(PackagesDir)/nRF/Source/nrf9160_Vectors.s;DeviceFamily=nRF;Target=nRF9160_xxAA"
@@ -134,9 +133,8 @@
     <configuration
       Name="Debug"
       arm_linker_check_cmse_import_library_file_name=""
-      arm_linker_variant="GNU"
       linker_additional_files="$(SolutionDir)/secure/$(OutDir)/secure_nsc.elf"
-      linker_section_placement_file="$(ProjectDir)/nRF9160_xxAA_section_placement.xml" />
+      linker_section_placement_file="nRF9160_xxAA_section_placement.xml" />
     <folder Name="FreeRTOS">
       <file file_name="../lib/FreeRTOS/Source/croutine.c" />
       <file file_name="../lib/FreeRTOS/Source/event_groups.c" />
