@@ -148,6 +148,7 @@
       <file file_name="../lib/FreeRTOS/Source/portable/GCC/ARM_CM33/non_secure/port.c" />
       <file file_name="../lib/FreeRTOS/Source/portable/GCC/ARM_CM33/non_secure/portasm.c" />
       <file file_name="../lib/FreeRTOS/Source/portable/Common/mpu_wrappers.c" />
+      <file file_name="../lib/FreeRTOS/Source/portable/MemMang/heap_4.c" />
     </folder>
   </project>
   <configuration Name="Common" />
