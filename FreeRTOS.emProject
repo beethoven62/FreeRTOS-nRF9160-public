@@ -21,7 +21,7 @@
       arm_target_device_name="nRF9160_xxAA"
       arm_target_interface_type="SWD"
       c_preprocessor_definitions="ARM_MATH_ARMV8MML;NRF9160_XXAA;__NRF_FAMILY"
-      c_user_include_directories="$(SolutionDir)/lib/CMSIS_5/CMSIS/Core/Include;$(SolutionDir)/lib/nRF/Device/Include;$(SolutionDir)/lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure"
+      c_user_include_directories="$(SolutionDir)/lib/CMSIS_5/CMSIS/Core/Include;$(SolutionDir)/lib/nRF/Device/Include;$(SolutionDir)/lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure;$(SolutionDir)/Config"
       debug_register_definition_file="$(ProjectDir)/nrf9160_Registers.xml"
       debug_stack_pointer_start="__stack_end__"
       debug_start_from_entry_point_symbol="No"
@@ -46,6 +46,10 @@
       <file file_name="main_s.c" />
       <file file_name="tzm_config.c" />
       <file file_name="nsc_functions.c" />
+      <file file_name="../lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure/secure_context_port.c" />
+      <file file_name="../lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure/secure_context.c" />
+      <file file_name="../lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure/secure_heap.c" />
+      <file file_name="../lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure/secure_init.c" />
     </folder>
     <folder Name="System Files">
       <file file_name="$(SolutionDir)/lib/nRF/Source/nRF_Startup.s" />
