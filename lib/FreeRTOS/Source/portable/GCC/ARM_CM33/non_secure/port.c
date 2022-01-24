@@ -73,6 +73,7 @@
 #define portNVIC_SYSTICK_CTRL_REG             ( *( ( volatile uint32_t * ) 0xe000e010 ) )
 #define portNVIC_SYSTICK_LOAD_REG             ( *( ( volatile uint32_t * ) 0xe000e014 ) )
 #define portNVIC_SYSTICK_CURRENT_VALUE_REG    ( *( ( volatile uint32_t * ) 0xe000e018 ) )
+#define portVTOR_OFFSET_REG                   ( *( ( volatile uint32_t * ) 0xe000ed08 ) )
 #define portNVIC_SHPR3_REG                    ( *( ( volatile uint32_t * ) 0xe000ed20 ) )
 #define portNVIC_SYSTICK_ENABLE_BIT           ( 1UL << 0UL )
 #define portNVIC_SYSTICK_INT_BIT              ( 1UL << 1UL )
@@ -345,6 +346,8 @@ void SysTick_Handler( void ) PRIVILEGED_FUNCTION;
  */
 portDONT_DISCARD void vPortSVCHandler_C( uint32_t * pulCallerStackAddress ) PRIVILEGED_FUNCTION;
 /*-----------------------------------------------------------*/
+
+extern uint32_t __PRIVILEGED_FLASH_segment_start__[];
 
 /**
  * @brief Each task maintains its own interrupt status in the critical nesting
@@ -1018,6 +1021,9 @@ BaseType_t xPortStartScheduler( void ) /* PRIVILEGED_FUNCTION */
 
     /* Initialize the critical nesting count ready for the first task. */
     ulCriticalNesting = 0;
+
+    /* Initialize vector offset register */
+    portVTOR_OFFSET_REG = ( uint32_t * )&( __PRIVILEGED_FLASH_segment_start__ );
 
     /* Start the first task. */
     vStartFirstTask();
