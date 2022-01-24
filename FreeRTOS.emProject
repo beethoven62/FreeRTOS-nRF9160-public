@@ -124,6 +124,7 @@
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
       <file file_name="main_ns.c" />
       <file file_name="tz_demo.c" />
+      <file file_name="mpu_demo.c" />
     </folder>
     <folder Name="System Files">
       <file file_name="$(SolutionDir)/lib/nRF/Source/nRF_Startup.s" />

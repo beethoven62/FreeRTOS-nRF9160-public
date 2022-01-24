@@ -1,7 +1,7 @@
 <!DOCTYPE Linker_Placement_File>
 <Root name="Flash Section Placement">
   <MemorySegment name="$(FLASH_NAME:PRIVILEGED_FLASH);PRIVILEGED_FLASH">
-    <ProgramSection alignment="32" load="Yes" name=".vectors" start="$(FLASH_START:)" />
+    <ProgramSection alignment="32" load="Yes" runin=".vectors_ram" name=".vectors" start="$(FLASH_START:)" />
     <ProgramSection alignment="4" load="Yes" name=".init" />
     <ProgramSection alignment="4" load="Yes" name=".init_rodata" />
     <ProgramSection alignment="4" load="Yes" name="privileged_functions" />

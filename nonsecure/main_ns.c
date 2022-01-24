@@ -33,7 +33,7 @@
 
 /* Demo includes. */
 #include "tz_demo.h"
-//#include "mpu_demo.h"
+#include "mpu_demo.h"
 /*-----------------------------------------------------------*/
 
 /**

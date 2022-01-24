@@ -182,7 +182,8 @@
 #define portMPU_ENABLE_BIT                    ( 1UL << 0UL )
 
 /* Expected value of the portMPU_TYPE register. */
-#define portEXPECTED_MPU_TYPE_VALUE           ( 8UL << 8UL ) /* 8 regions, unified. */
+#define portEXPECTED_MPU_TYPE_VALUE8           ( 8UL << 8UL ) /* 8 regions, unified. */
+#define portEXPECTED_MPU_TYPE_VALUE16         ( 16UL << 8UL ) /* 16 regions, unified. */
 /*-----------------------------------------------------------*/
 
 /**
@@ -624,7 +625,7 @@ static void prvTaskExitError( void )
         #endif /* defined( __ARMCC_VERSION ) */
 
         /* Check that the MPU is present. */
-        if( portMPU_TYPE_REG == portEXPECTED_MPU_TYPE_VALUE )
+        if( portMPU_TYPE_REG == portEXPECTED_MPU_TYPE_VALUE8 || portMPU_TYPE_REG == portEXPECTED_MPU_TYPE_VALUE16 )
         {
             /* MAIR0 - Index 0. */
             portMPU_MAIR0_REG |= ( ( portMPU_NORMAL_MEMORY_BUFFERABLE_CACHEABLE << portMPU_MAIR_ATTR0_POS ) & portMPU_MAIR_ATTR0_MASK );
