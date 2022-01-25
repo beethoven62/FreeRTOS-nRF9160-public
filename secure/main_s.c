@@ -80,6 +80,9 @@ static void prvBootNonSecure( uint32_t ulNonSecureStartAddress )
 {
     NonSecureResetHandler_t pxNonSecureResetHandler;
 
+    /* Setup the non-secure vector table. */
+    SCB_NS->VTOR = ulNonSecureStartAddress;
+        
     /* Main Stack Pointer value for the non-secure side is the first entry in
      * the non-secure vector table. Read the first entry and assign the same to
      * the non-secure main stack pointer(MSP_NS). */
