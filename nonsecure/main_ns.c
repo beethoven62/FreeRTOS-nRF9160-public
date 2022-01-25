@@ -49,8 +49,6 @@ static void prvCreateTasks( void );
 void MemManage_Handler( void ) __attribute__ ( ( naked ) );
 /*-----------------------------------------------------------*/
 
-extern uint32_t __PRIVILEGED_FLASH_segment_start__[];
-extern uint32_t __PRIVILEGED_FLASH_segment_end__[];
 extern uint32_t __SYSCALLS_FLASH_segment_start__[];
 extern uint32_t __SYSCALLS_FLASH_segment_end__[];
 extern uint32_t __UNPRIVILEGED_FLASH_segment_start__[];
@@ -58,12 +56,10 @@ extern uint32_t __UNPRIVILEGED_FLASH_segment_end__[];
 extern uint32_t __PRIVILEGED_RAM_segment_start__[];
 extern uint32_t __PRIVILEGED_RAM_segment_end__[];
 
-uint32_t * __syscalls_flash_start__ = ( uint32_t * )&( __SYSCALLS_FLASH_segment_start__ );
-uint32_t * __syscalls_flash_end__ = ( uint32_t * )( ( uint8_t * )&( __SYSCALLS_FLASH_segment_end__ ) - 1 );
-uint32_t * __unprivileged_flash_start__ = ( uint32_t * )&( __UNPRIVILEGED_FLASH_segment_start__ );
-uint32_t * __unprivileged_flash_end__ = ( uint32_t * )( ( uint8_t * )&( __UNPRIVILEGED_FLASH_segment_end__ ) - 1 );
-uint32_t * __privileged_sram_start__ = ( uint32_t * )&( __PRIVILEGED_RAM_segment_start__ );
-uint32_t * __privileged_sram_end__ = ( uint32_t * )( ( uint8_t * )&( __PRIVILEGED_RAM_segment_end__ ) - 1 );
+uint32_t __unprivileged_flash_start__ = ( uint32_t )( __UNPRIVILEGED_FLASH_segment_start__ );
+uint32_t __unprivileged_flash_end__ = ( uint32_t )( ( __UNPRIVILEGED_FLASH_segment_end__ ) - 1 );
+uint32_t __privileged_sram_start__ = ( uint32_t )( __PRIVILEGED_RAM_segment_start__ );
+uint32_t __privileged_sram_end__ = ( uint32_t )( ( __PRIVILEGED_RAM_segment_end__ ) - 1 );
 /*-----------------------------------------------------------*/
 
 /* For instructions on how to build and run this demo, visit the following link:
@@ -92,7 +88,7 @@ int main( void )
 static void prvCreateTasks( void )
 {
     /* Create tasks for the MPU Demo. */
-    //vStartMPUDemo();
+    vStartMPUDemo();
 
     /* Create tasks for the TZ Demo. */
     vStartTZDemo();

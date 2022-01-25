@@ -95,7 +95,7 @@ static void prvROAccessTask( void * pvParameters )
         ucROTaskFaultTracker[ 0 ] = 1;
 
         /* Illegal access to generate Memory Fault. */
-        ucSharedMemory[ 0 ] = 0;
+        //ucSharedMemory[ 0 ] = 0;
 
         /* Wait for a second. */
         vTaskDelay( pdMS_TO_TICKS( 1000 ) );

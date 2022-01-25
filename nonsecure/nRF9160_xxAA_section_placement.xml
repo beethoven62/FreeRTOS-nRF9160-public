@@ -8,7 +8,7 @@
     <ProgramSection alignment="32" load="Yes" runin="privileged_data_run" name="privileged_data" />
   </MemorySegment>
   <MemorySegment name="$(FLASH_NAME:SYSCALLS_FLASH);SYSCALLS_FLASH">
-    <ProgramSection alignment="32" load="Yes" name="freertos_system_calls" />
+    <ProgramSection alignment="32" load="Yes" name="syscalls_flash" />
   </MemorySegment>
   <MemorySegment name="$(FLASH_NAME:UNPRIVILEGED_FLASH);UNPRIVILEGED_FLASH">
     <ProgramSection alignment="4" load="Yes" name=".text" />
