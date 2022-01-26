@@ -34,6 +34,7 @@
 /* Demo includes. */
 #include "tz_demo.h"
 #include "mpu_demo.h"
+#include "blinky.h"
 /*-----------------------------------------------------------*/
 
 /**
@@ -92,6 +93,9 @@ static void prvCreateTasks( void )
 
     /* Create tasks for the TZ Demo. */
     vStartTZDemo();
+
+    /* Create task for the Blinky Demo. */
+    vStartBlinkyDemo();
 }
 /*-----------------------------------------------------------*/
 

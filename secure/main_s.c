@@ -53,6 +53,12 @@ static void prvBootNonSecure( uint32_t ulNonSecureStartAddress );
  */
 void SystemInitHook( void );
 /*-----------------------------------------------------------*/
+/* Configure non-secure regions. */
+void BOARD_InitPins( void );
+void nrf_spu_periph_set( uint16_t id, uint32_t flags );
+void nrf_spu_periph_clear( uint16_t id, uint32_t flags );
+void nrf_spu_gpio_set( uint16_t id );
+void nrf_spu_gpio_clear( uint16_t id );
 
 /* Secure main(). */
 int main(void)
@@ -62,7 +68,7 @@ int main(void)
     printf( "Booting Secure World.\n" );
 
     /* Init board hardware. */
-    //BOARD_InitPins();
+    BOARD_InitPins();
 
     /* Boot the non-secure code. */
     printf( "Booting Non-Secure World.\r\n" );
@@ -108,3 +114,39 @@ void SystemInitHook( void )
     BOARD_InitTrustZone();
 }
 /*-----------------------------------------------------------*/
+
+/*-----------------------------------------------------------*/
+
+void BOARD_InitPins( void )
+{
+  uint16_t rgn;
+
+  /* Configure non-secure peripherals */
+  rgn = (( uint32_t )NRF_P0_NS >> 12) & 0x7f;
+  nrf_spu_periph_clear( rgn, SPU_PERIPHID_PERM_SECATTR_Msk );
+
+  for ( rgn = 2; rgn < 10; rgn++ )
+  {
+    nrf_spu_gpio_clear( rgn );
+  }
+}
+
+void nrf_spu_gpio_set( uint16_t id )
+{
+  NRF_SPU_S->GPIOPORT[0].PERM |= ( 1 << id );
+}
+
+void nrf_spu_gpio_clear( uint16_t id )
+{
+  NRF_SPU_S->GPIOPORT[0].PERM &= ~( 1 << id );
+}
+
+void nrf_spu_periph_set( uint16_t id, uint32_t flags )
+{
+  NRF_SPU_S->PERIPHID[id].PERM |= flags;
+}
+
+void nrf_spu_periph_clear( uint16_t id, uint32_t flags )
+{
+  NRF_SPU_S->PERIPHID[id].PERM &= ~flags;
+}

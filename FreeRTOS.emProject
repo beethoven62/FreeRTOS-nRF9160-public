@@ -125,6 +125,8 @@
       <file file_name="main_ns.c" />
       <file file_name="tz_demo.c" />
       <file file_name="mpu_demo.c" />
+      <file file_name="blinky.c" />
+      <file file_name="blinky.h" />
     </folder>
     <folder Name="System Files">
       <file file_name="$(SolutionDir)/lib/nRF/Source/nRF_Startup.s" />
