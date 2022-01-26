@@ -134,6 +134,8 @@
     <configuration
       Name="Debug"
       arm_linker_check_cmse_import_library_file_name=""
+      arm_simulator_memory_simulation_parameter="ROM;0x00010000;0x000f0000;RAM;0x20008000;0x00036000"
+      debug_target_connection="Simulator"
       linker_additional_files="$(SolutionDir)/secure/$(OutDir)/secure_nsc.elf"
       linker_section_placement_file="nRF9160_xxAA_section_placement.xml" />
     <folder Name="FreeRTOS">
