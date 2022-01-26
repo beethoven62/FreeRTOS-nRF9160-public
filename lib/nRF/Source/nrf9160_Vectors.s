@@ -168,22 +168,22 @@ _vectors:
         //
         // Internal exceptions and interrupts
         //
-        VECTOR __stack_end__
-        VECTOR Reset_Handler
-        EXC_HANDLER NMI_Handler
-        VECTOR HardFault_Handler
-        ISR_RESERVED
-        ISR_RESERVED
-        ISR_RESERVED
-        ISR_RESERVED
-        ISR_RESERVED
-        ISR_RESERVED
-        ISR_RESERVED
-        EXC_HANDLER SVC_Handler
-        ISR_RESERVED
-        ISR_RESERVED
-        EXC_HANDLER PendSV_Handler
-        EXC_HANDLER SysTick_Handler
+        VECTOR __stack_end__                            // Top of Stack
+        VECTOR Reset_Handler                            // Reset Handler                            
+        EXC_HANDLER NMI_Handler                         // NMI Handler
+        VECTOR HardFault_Handler                        // Hard Fault Handler
+        VECTOR MemManage_Handler                        // MPU Fault Handler
+        ISR_RESERVED_DUMMY                              // Bus Fault Handler
+        ISR_RESERVED_DUMMY                              // Usage Fault Handler
+        ISR_RESERVED                                    // Reserved
+        ISR_RESERVED                                    // Reserved
+        ISR_RESERVED                                    // Reserved
+        ISR_RESERVED                                    // Reserved
+        EXC_HANDLER SVC_Handler                         // SVCall Handler
+        ISR_RESERVED_DUMMY                              // Debug Monitor Handler
+        ISR_RESERVED                                    // Reserved
+        EXC_HANDLER PendSV_Handler                      // PendSV Handler
+        EXC_HANDLER SysTick_Handler                     // SysTick Handler
         //
         // External interrupts
         //
