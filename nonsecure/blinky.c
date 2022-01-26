@@ -11,11 +11,6 @@
 #include "blinky.h"
 
 /**
- * @brief Size of the shared memory region.
- */
-#define SHARED_MEMORY_SIZE    32
-
-/**
  * @brief Implements the task which will blink the LEDs.
  *
  * @param pvParameters[in] Parameters as passed during task creation.
@@ -25,11 +20,11 @@ static void prvBlinkyTask( void * pvParameters );
 
 /* Configure GPIO */
 
-void nrf_gpio_dir_set(uint16_t pin);
-void nrf_gpio_dir_clear(uint16_t pin);
-static void nrf_gpio_out_set(uint16_t pin);
-void nrf_gpio_out_clear(uint16_t pin);
-void nrf_gpio_out_toggle(uint16_t pin);
+void nrf_gpio_dir_set( uint16_t pin );
+void nrf_gpio_dir_clear( uint16_t pin );
+static void nrf_gpio_out_set( uint16_t pin );
+void nrf_gpio_out_clear( uint16_t pin );
+void nrf_gpio_out_toggle( uint16_t pin );
 
 /* Custom task delay (FreeRTOS not tolerating more than one tick) */
 void vDelay( uint16_t milliseconds );
@@ -61,7 +56,7 @@ void vStartBlinkyDemo( void )
     }
 
     /* Create an unprivileged task. */
-    xTaskCreateRestricted(  &( xBlinkyTaskParameters ), NULL  );
+    xTaskCreateRestricted(  &( xBlinkyTaskParameters ), NULL );
 }
 
 /*-----------------------------------------------------------*/
@@ -82,32 +77,32 @@ static void prvBlinkyTask( void * pvParameters )
     } while ( pdTRUE );
 }
 
-void nrf_gpio_dir_set(uint16_t pin)
+void nrf_gpio_dir_set( uint16_t pin )
 {
-    NRF_P0_NS->DIRSET = (1 << pin);
+    NRF_P0_NS->DIRSET = ( 1 << pin );
 }
 
-void nrf_gpio_dir_clear(uint16_t pin)
+void nrf_gpio_dir_clear( uint16_t pin )
 {
-    NRF_P0_NS->DIRCLR = (1 << pin);
+    NRF_P0_NS->DIRCLR = ( 1 << pin );
 }
 
-static void nrf_gpio_out_set(uint16_t pin)
+static void nrf_gpio_out_set( uint16_t pin )
 {
-    NRF_P0_NS->OUTSET = (1 << pin);
+    NRF_P0_NS->OUTSET = ( 1 << pin );
 }
 
-void nrf_gpio_out_clear(uint16_t pin)
+void nrf_gpio_out_clear( uint16_t pin )
 {
-    NRF_P0_NS->OUTCLR = (1 << pin);
+    NRF_P0_NS->OUTCLR = ( 1 << pin );
 }
 
-void nrf_gpio_out_toggle(uint16_t pin)
+void nrf_gpio_out_toggle( uint16_t pin )
 {
     uint32_t gpio;
 
     gpio = NRF_P0_NS->OUT;
-    gpio ^= (1 << pin);
+    gpio ^= ( 1 << pin );
     NRF_P0_NS->OUT = gpio;
 }
 
