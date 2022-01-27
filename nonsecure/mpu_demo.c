@@ -162,7 +162,7 @@ void vStartMPUDemo( void )
     xTaskCreateRestricted( &( xRWAccessTaskParameters ), NULL );
 }
 /*-----------------------------------------------------------*/
-
+#if 0
 portDONT_DISCARD void vHandleMemoryFault( uint32_t * pulFaultStackAddress )
 {
     uint32_t ulPC;
@@ -225,3 +225,4 @@ portDONT_DISCARD void vHandleMemoryFault( uint32_t * pulFaultStackAddress )
     }
 }
 /*-----------------------------------------------------------*/
+#endif

@@ -43,9 +43,9 @@ void vStartBlinkyDemo( void )
         .puxStackBuffer = xBlinkyTaskStack,
         .xRegions       =
         {
-            { NRF_P0_NS, 640, tskMPU_REGION_READ_WRITE | tskMPU_REGION_EXECUTE_NEVER },
-            { 0,           0, 0                                                      },
-            { 0,           0, 0                                                      },
+            { NRF_P0_NS,           640, tskMPU_REGION_READ_WRITE | tskMPU_REGION_EXECUTE_NEVER },
+            { 0,                     0, 0                                                      },
+            { 0,                     0, 0                                                      },
         }
     };
 
@@ -65,6 +65,8 @@ static void prvBlinkyTask( void * pvParameters )
 {
     uint16_t i = 0;
     uint32_t j;
+
+    printf("Blinky\n");
 
     do {
         /* This task will blink the LEDs 
