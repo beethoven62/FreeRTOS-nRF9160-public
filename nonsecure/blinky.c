@@ -39,7 +39,7 @@ void vStartBlinkyDemo( void )
         .pcName         = "Blinky",
         .usStackDepth   = configMINIMAL_STACK_SIZE,
         .pvParameters   = NULL,
-        .uxPriority     = tskIDLE_PRIORITY,
+        .uxPriority     = tskIDLE_PRIORITY | portPRIVILEGE_BIT,
         .puxStackBuffer = xBlinkyTaskStack,
         .xRegions       =
         {
@@ -73,6 +73,7 @@ static void prvBlinkyTask( void * pvParameters )
     {
         /* This task will blink the LEDs 
          */
+        printf("LED #%d\n", i);
         nrf_gpio_out_toggle( i + 2 );
         vTaskDelay( pdMS_TO_TICKS( 1000 ) );
         nrf_gpio_out_toggle( i + 2 );
