@@ -25,6 +25,8 @@ void nrf_gpio_dir_clear( uint16_t pin );
 static void nrf_gpio_out_set( uint16_t pin );
 void nrf_gpio_out_clear( uint16_t pin );
 void nrf_gpio_out_toggle( uint16_t pin );
+uint32_t powerof2( uint32_t number );
+uint32_t base2( uint32_t number, uint32_t base );
 
 /* Custom task delay (FreeRTOS not tolerating more than one tick) */
 void vDelay( uint16_t milliseconds );
@@ -43,9 +45,9 @@ void vStartBlinkyDemo( void )
         .puxStackBuffer = xBlinkyTaskStack,
         .xRegions       =
         {
-            { NRF_P0_NS,           640, tskMPU_REGION_READ_WRITE | tskMPU_REGION_EXECUTE_NEVER },
-            { 0,                     0, 0                                                      },
-            { 0,                     0, 0                                                      },
+            { base2( NRF_P0_NS, powerof2( sizeof( NRF_GPIO_Type ) ) ), powerof2( sizeof( NRF_GPIO_Type ) ), tskMPU_REGION_READ_WRITE | tskMPU_REGION_EXECUTE_NEVER },
+            { 0,                                                       0,                                   0                                                      },
+            { 0,                                                       0,                                   0                                                      },
         }
     };
 
@@ -108,4 +110,30 @@ void nrf_gpio_out_toggle( uint16_t pin )
     gpio = NRF_P0_NS->OUT;
     gpio ^= ( 1 << pin );
     NRF_P0_NS->OUT = gpio;
+}
+
+uint32_t powerof2( uint32_t number )
+{
+    uint32_t n = number;
+    uint32_t p = 0;
+
+    while ( n > 0 )
+    {
+        p++;
+        n >>= 1;
+    }
+
+    if ( number > ( 1 << p ) )
+    {
+        p++;
+    }
+
+    return 1 << p;
+}
+
+uint32_t base2( uint32_t number, uint32_t base )
+{
+    uint32_t p = number / base;
+
+    return p * base;
 }

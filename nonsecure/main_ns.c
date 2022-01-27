@@ -50,8 +50,6 @@ static void prvCreateTasks( void );
 void MemManage_Handler( void ) __attribute__ ( ( naked ) );
 /*-----------------------------------------------------------*/
 
-extern uint32_t __SYSCALLS_FLASH_segment_start__[];
-extern uint32_t __SYSCALLS_FLASH_segment_end__[];
 extern uint32_t __UNPRIVILEGED_FLASH_segment_start__[];
 extern uint32_t __UNPRIVILEGED_FLASH_segment_end__[];
 extern uint32_t __PRIVILEGED_RAM_segment_start__[];
