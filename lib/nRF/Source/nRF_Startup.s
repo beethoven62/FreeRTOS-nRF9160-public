@@ -285,4 +285,23 @@ L(Pass_StackPtr):
         //
         bx      LR                      // Return
 
+	.weak	Default_Handler
+	.type	Default_Handler, %function
+        .section .init.Default_Handler, "ax"
+        .balign 2
+        .thumb_func
+Default_Handler:
+	b	.
+	.size	Default_Handler, . - Default_Handler
+
+/*    Macro to define default handlers. Default handler
+ *    will be weak symbol and just dead loops. They can be
+ *    overwritten by other handlers */
+	.macro	def_irq_handler	handler_name
+	.weak	\handler_name
+	.set	\handler_name, Default_Handler
+	.endm
+
+        def_irq_handler MemManage_Handler
+
 /*************************** End of file ****************************/
