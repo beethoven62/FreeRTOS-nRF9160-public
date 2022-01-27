@@ -126,7 +126,6 @@
       <file file_name="tz_demo.c" />
       <file file_name="mpu_demo.c" />
       <file file_name="blinky.c" />
-      <file file_name="blinky.h" />
     </folder>
     <folder Name="System Files">
       <file file_name="$(SolutionDir)/lib/nRF/Source/nRF_Startup.s" />
@@ -135,7 +134,9 @@
     </folder>
     <configuration
       Name="Debug"
+      THREAD_SCRIPT="FreeRTOS CM7"
       arm_linker_check_cmse_import_library_file_name=""
+      debug_threads_script="$(StudioDir)/samples/FreeRTOSPlugin_CM7.js"
       linker_additional_files="$(SolutionDir)/secure/$(OutDir)/secure_nsc.elf"
       linker_section_placement_file="nRF9160_xxAA_section_placement.xml" />
     <folder Name="FreeRTOS">

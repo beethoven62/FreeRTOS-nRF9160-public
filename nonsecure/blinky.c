@@ -49,12 +49,6 @@ void vStartBlinkyDemo( void )
         }
     };
 
-    /* Set up LEDs */
-    for ( i = 2; i < 10; i++ )
-    {
-        nrf_gpio_dir_set(i);
-    }
-
     /* Create an unprivileged task. */
     xTaskCreateRestricted(  &( xBlinkyTaskParameters ), NULL );
 }
@@ -63,20 +57,27 @@ void vStartBlinkyDemo( void )
 
 static void prvBlinkyTask( void * pvParameters )
 {
-    uint16_t i = 0;
+    uint16_t i;
     uint32_t j;
 
     printf("Blinky\n");
 
-    do {
+    /* Set up LEDs */
+    for ( i = 2; i < 10; i++ )
+    {
+        nrf_gpio_dir_set(i);
+    }
+
+    /* Start LEDs */
+    for ( i = 0; ; i = ( i + 1 ) % 4 )
+    {
         /* This task will blink the LEDs 
          */
         nrf_gpio_out_toggle( i + 2 );
-        vDelay( 1000 );
+        vTaskDelay( pdMS_TO_TICKS( 1000 ) );
         nrf_gpio_out_toggle( i + 2 );
-        vDelay( 1000 );
-        i = ( i + 1 ) % 4;
-    } while ( pdTRUE );
+        vTaskDelay( pdMS_TO_TICKS( 1000 ) );
+    }
 }
 
 void nrf_gpio_dir_set( uint16_t pin )
@@ -106,15 +107,4 @@ void nrf_gpio_out_toggle( uint16_t pin )
     gpio = NRF_P0_NS->OUT;
     gpio ^= ( 1 << pin );
     NRF_P0_NS->OUT = gpio;
-}
-
-void vDelay( uint16_t milliseconds )
-{
-    TickType_t i;
-    TickType_t ticks = pdMS_TO_TICKS( milliseconds );
-
-    for ( i = 0; i < ticks; i++ )
-    {
-        vTaskDelay( 1 );
-    }
 }
