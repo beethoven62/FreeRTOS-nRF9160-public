@@ -51,6 +51,15 @@ void BOARD_InitTrustZone( void )
     nrf_spu_ramregion_clear( rgn, SPU_RAMREGION_PERM_SECATTR_Msk );
   }
 
+  /* Configure non-secure peripherals */
+  rgn = (( uint32_t )NRF_P0_NS >> 12) & 0x7f;
+  nrf_spu_periph_clear( rgn, SPU_PERIPHID_PERM_SECATTR_Msk );
+
+  for ( rgn = 2; rgn < 10; rgn++ )
+  {
+    nrf_spu_gpio_clear( rgn );
+  }
+
   /* Configure non-secure callable functions */
   nrf_spu_nsc( NSC_FUNCTION_ADDRESS );
 }
@@ -73,6 +82,26 @@ void nrf_spu_ramregion_set( uint16_t region, uint32_t flags )
 void nrf_spu_ramregion_clear( uint16_t region, uint32_t flags )
 {
   NRF_SPU_S->RAMREGION[region].PERM &= ~flags;
+}
+
+void nrf_spu_gpio_set( uint16_t id )
+{
+  NRF_SPU_S->GPIOPORT[0].PERM |= ( 1 << id );
+}
+
+void nrf_spu_gpio_clear( uint16_t id )
+{
+  NRF_SPU_S->GPIOPORT[0].PERM &= ~( 1 << id );
+}
+
+void nrf_spu_periph_set( uint16_t id, uint32_t flags )
+{
+  NRF_SPU_S->PERIPHID[id].PERM |= flags;
+}
+
+void nrf_spu_periph_clear( uint16_t id, uint32_t flags )
+{
+  NRF_SPU_S->PERIPHID[id].PERM &= ~flags;
 }
 
 void nrf_spu_nsc( uint32_t address )
