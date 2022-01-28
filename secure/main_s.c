@@ -61,9 +61,6 @@ int main(void)
     SystemInitHook();
     printf( "Booting Secure World.\n" );
 
-    /* Init board hardware. */
-    //BOARD_InitPins();
-
     /* Boot the non-secure code. */
     printf( "Booting Non-Secure World.\r\n" );
     prvBootNonSecure( mainNONSECURE_APP_START_ADDRESS );
