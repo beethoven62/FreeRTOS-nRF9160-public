@@ -172,7 +172,7 @@ _vectors:
         VECTOR Reset_Handler                            // Reset Handler                            
         EXC_HANDLER NMI_Handler                         // NMI Handler
         VECTOR HardFault_Handler                        // Hard Fault Handler
-        VECTOR MemManage_Handler                        // MPU Fault Handler
+        EXC_HANDLER MemManage_Handler                   // MPU Fault Handler
         ISR_RESERVED_DUMMY                              // Bus Fault Handler
         ISR_RESERVED_DUMMY                              // Usage Fault Handler
         ISR_RESERVED                                    // Reserved
