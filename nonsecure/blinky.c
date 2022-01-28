@@ -45,9 +45,9 @@ void vStartBlinkyDemo( void )
         .puxStackBuffer = xBlinkyTaskStack,
         .xRegions       =
         {
-            { base2( NRF_P0_NS, powerof2( sizeof( NRF_GPIO_Type ) ) ), powerof2( sizeof( NRF_GPIO_Type ) ), tskMPU_REGION_READ_WRITE | tskMPU_REGION_EXECUTE_NEVER },
-            { 0,                                                       0,                                   0                                                      },
-            { 0,                                                       0,                                   0                                                      },
+            { ( uint32_t * ) base2( ( uint32_t ) NRF_P0_NS, powerof2( sizeof( NRF_GPIO_Type ) ) ), powerof2( sizeof( NRF_GPIO_Type ) ), tskMPU_REGION_READ_WRITE | tskMPU_REGION_EXECUTE_NEVER },
+            { 0,                                                                      0,                                   0                                                      },
+            { 0,                                                                      0,                                   0                                                      },
         }
     };
 
