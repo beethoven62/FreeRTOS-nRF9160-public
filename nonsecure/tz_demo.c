@@ -24,9 +24,13 @@
  *
  */
 
+#include <string.h>
+
 /* FreeRTOS includes. */
 #include "FreeRTOS.h"
 #include "task.h"
+
+#include "log.h"
 
 /* Non-Secure callable functions. */
 #include "nsc_functions.h"
@@ -111,6 +115,7 @@ static void prvSecureCallingTask( void * pvParameters )
 {
     uint32_t ulLastSecureCounter = 0, ulLastNonSecureCounter = 0;
     uint32_t ulCurrentSecureCounter = 0;
+    char ucBuf[ LOG_MSG_MAX ];
 
     /* This task calls secure side functions. So allocate a secure context for
      * it. */
@@ -134,6 +139,10 @@ static void prvSecureCallingTask( void * pvParameters )
         /* Update the last values for both the counters. */
         ulLastSecureCounter = ulCurrentSecureCounter;
         ulLastNonSecureCounter = ulNonSecureCounter[ 0 ];
+
+        /* Debug log */
+        sprintf( ucBuf, "TZ counter: %d\n", ulCurrentSecureCounter );
+        vLogPrint( ucBuf );
 
         /* Wait for a second. */
         vTaskDelay( pdMS_TO_TICKS( 1000 ) );
