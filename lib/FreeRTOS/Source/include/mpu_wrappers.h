@@ -174,9 +174,16 @@
 
 #else /* portUSING_MPU_WRAPPERS */
 
+#if 0
     #define PRIVILEGED_FUNCTION
     #define PRIVILEGED_DATA
     #define FREERTOS_SYSTEM_CALL
+#else
+    #define PRIVILEGED_FUNCTION     __attribute__( ( section( "privileged_functions" ) ) )
+    #define PRIVILEGED_DATA         __attribute__( ( section( "privileged_data" ) ) )
+    #define FREERTOS_SYSTEM_CALL    __attribute__( ( section( "syscalls_flash" ) ) )
+#endif
+
     #define portUSING_MPU_WRAPPERS    0
 
 #endif /* portUSING_MPU_WRAPPERS */

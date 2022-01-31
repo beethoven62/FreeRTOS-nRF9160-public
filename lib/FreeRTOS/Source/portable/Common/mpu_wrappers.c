@@ -43,6 +43,8 @@
 #include "stream_buffer.h"
 #include "mpu_prototypes.h"
 
+#if configENABLE_MPU == 1
+
 #undef MPU_WRAPPERS_INCLUDED_FROM_API_FILE
 
 /**
@@ -1392,6 +1394,8 @@ BaseType_t MPU_xStreamBufferSetTriggerLevel( StreamBufferHandle_t xStreamBuffer,
     }
 #endif /* configSUPPORT_STATIC_ALLOCATION */
 /*-----------------------------------------------------------*/
+
+#endif /* configENABLE_MPU */
 
 
 /* Functions that the application writer wants to execute in privileged mode
