@@ -78,14 +78,23 @@ void vStartTZDemo( void )
         .puxStackBuffer = xSecureCallingTaskStack,
         .xRegions       =
         {
-            { ulNonSecureCounter, 32, tskMPU_REGION_READ_WRITE | tskMPU_REGION_EXECUTE_NEVER },
+            { ulNonSecureCounter, 32, portMPU_REGION_READ_WRITE | portMPU_REGION_EXECUTE_NEVER },
             { 0,                  0,  0                                                      },
             { 0,                  0,  0                                                      },
         }
     };
 
     /* Create an unprivileged task which calls secure functions. */
+#if configENABLE_MPU == 1
     xTaskCreateRestricted( &( xSecureCallingTaskParameters ), NULL );
+#else
+    xTaskCreate( xSecureCallingTaskParameters.pvTaskCode, 
+                 xSecureCallingTaskParameters.pcName, 
+                 xSecureCallingTaskParameters.usStackDepth, 
+                 xSecureCallingTaskParameters.pvParameters, 
+                 xSecureCallingTaskParameters.uxPriority, 
+                 NULL );
+#endif
 }
 /*-----------------------------------------------------------*/
 

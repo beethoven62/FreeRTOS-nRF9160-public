@@ -31,9 +31,9 @@
 /* Device includes. */
 #include <nrf.h>
 
-/* Demo includes. */
+/* Task includes. */
+#include "log.h"
 #include "tz_demo.h"
-#include "mpu_demo.h"
 #include "blinky.h"
 /*-----------------------------------------------------------*/
 
@@ -86,8 +86,8 @@ int main( void )
 
 static void prvCreateTasks( void )
 {
-    /* Create tasks for the MPU Demo. */
-    vStartMPUDemo();
+    /* Create debug logging task */
+    vStartLogTask();
 
     /* Create tasks for the TZ Demo. */
     vStartTZDemo();
