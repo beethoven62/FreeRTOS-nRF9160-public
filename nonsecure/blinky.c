@@ -1,7 +1,7 @@
 /* Trying out the peripherals on the nRF9160 starting out with the LEDs on the nRF9160DK */
 
-#include <nrf.h>
 #include <stdio.h>
+#include <nrf.h>
 
 /* FreeRTOS includes. */
 #include "FreeRTOS.h"
