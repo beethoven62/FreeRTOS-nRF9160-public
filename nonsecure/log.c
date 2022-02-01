@@ -15,7 +15,6 @@
 
 static uint32_t uiMessageID;
 static QueueHandle_t xLogQueue;
-static void *pvParameters;
 static void prvLogTask( void *prvParameters );
 
 void vStartLogTask( void )
@@ -32,7 +31,7 @@ void vStartLogTask( void )
         .pvTaskCode     = prvLogTask,
         .pcName         = "LogTask",
         .usStackDepth   = configMINIMAL_STACK_SIZE,
-        .pvParameters   = ( void *) xLogQueue,
+        .pvParameters   = NULL,
         .uxPriority     = tskIDLE_PRIORITY | portPRIVILEGE_BIT,
         .puxStackBuffer = xLogTaskStack,
         .xRegions       =
@@ -58,11 +57,7 @@ void vStartLogTask( void )
 
 void prvLogTask( void *prvParameters )
 {
-    QueueHandle_t xLogQueue;
     LogMessage_t xLogMessage;
-
-    /* The queue handle is passed into this task as the task parameter */
-    xLogQueue = ( QueueHandle_t ) prvParameters;
 
     for( ; ; ) 
     {
@@ -100,7 +95,7 @@ void vLogPrint( char * pcLogMessage )
 
     strcpy(xLogMessage.ucData, pcLogMessage);
     xLogMessage.ucLogMessageID = uiMessageID;
-    if ( xQueueSend(xGetLogHandle(),&xLogMessage, pdMS_TO_TICKS( 100 ) ) != pdPASS )
+    if ( xQueueSend(xGetLogHandle(), &xLogMessage, pdMS_TO_TICKS( 100 ) ) != pdPASS )
     {
         /* Message failed to send */
     }
