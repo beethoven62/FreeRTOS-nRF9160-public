@@ -84,10 +84,9 @@ static void prvBlinkyTask( void * pvParameters )
     /* Start LEDs */
     for ( i = 0; ; i = ( i + 1 ) % 4 )
     {
-        /* This task will blink the LEDs 
-         */
-         sprintf( ucBuf, "LED #%d\n", i );
-         vLogPrint( ucBuf );
+        /* This task will blink the LEDs */
+        sprintf( ucBuf, "LED #%d\n", i );
+        vLogPrint( ucBuf );
         nrf_gpio_out_toggle( i + 2 );
         vTaskDelay( pdMS_TO_TICKS( 1000 ) );
         nrf_gpio_out_toggle( i + 2 );
