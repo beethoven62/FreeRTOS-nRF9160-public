@@ -24,7 +24,7 @@
  *
  */
 
-#include <string.h>
+#include <stdio.h>
 
 /* FreeRTOS includes. */
 #include "FreeRTOS.h"
