@@ -181,14 +181,6 @@ _start:
   ldr r1, =__tdata_start__
   ldr r2, =__tdata_end__
   bl memory_copy
-  ldr r0, =__privileged_data_load_start__
-  ldr r1, =__privileged_data_start__
-  ldr r2, =__privileged_data_end__
-  bl memory_copy
-  ldr r0, =__vectors_load_start__
-  ldr r1, =__vectors_ram_start__
-  ldr r2, =__vectors_ram_end__
-  bl memory_copy
 #ifdef INITIALIZE_SECONDARY_SECTIONS
   ldr r0, =__data2_load_start__
   ldr r1, =__data2_start__

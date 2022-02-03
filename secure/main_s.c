@@ -24,17 +24,16 @@
  *
  */
 
+/* Standard includes. */
+#include <stdio.h>
+#include <stdlib.h>
+
 /* FreeRTOS includes. */
 #include <secure_port_macros.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <arm_cmse.h>
+/* Device includes */
 #include <nrf.h>
-
-//#include "board.h"
-//#include "pin_mux.h"
-#include "tzm_config.h"
+#include <arm_cmse.h>
 
 /* typedef for non-secure Reset Handler. */
 typedef void ( *NonSecureResetHandler_t ) ( void ) __attribute__( ( cmse_nonsecure_call ) );
@@ -48,18 +47,45 @@ typedef void ( *NonSecureResetHandler_t ) ( void ) __attribute__( ( cmse_nonsecu
 static void prvBootNonSecure( uint32_t ulNonSecureStartAddress );
 
 /**
- * @brief Application-specific implementation of the SystemInitHook() weak
- * function.
+ * @brief Sets up System Protection Unit (SPU) for non-secure and NSC sections.
  */
-void SystemInitHook( void );
+/***********************************************************************************************************************
+ * Definitions
+ **********************************************************************************************************************/
+/* Address regions and SPU_S register configuration */
+#define mainNONSECURE_APP_START_ADDRESS         ( 0x00010000U )
+#define mainNONSECURE_RAM_START_ADDRESS         ( 0x20008000U )
+#define NSC_FUNCTION_ADDRESS                    ( 0x0000f000U )
+#define RAM_ADDRESS_MASK                        ( 0x0fffffffU )
+#define SPU_FLASHREGION_SIZE                    ( 0x8000U )
+#define SPU_RAMREGION_SIZE                      ( 0x2000U )
+#define SPU_NSCREGION_SIZE                      ( 8 )
+#define SPU_NUM_REGIONS                         ( 0x20U )
+
+/* Configure non-secure regions. */
+static void prvSetupSPU( void );
+void config_nonsecure_peripheral( void *peripheral );
+void nrf_spu_flashregion_set( uint16_t region, uint32_t flags );
+void nrf_spu_flashregion_clear( uint16_t region, uint32_t flags );
+void nrf_spu_ramregion_set( uint16_t region, uint32_t flags );
+void nrf_spu_ramregion_clear( uint16_t region, uint32_t flags );
+void nrf_spu_periph_set( uint16_t id, uint32_t flags );
+void nrf_spu_periph_clear( uint16_t id, uint32_t flags );
+void nrf_spu_gpio_set( uint16_t id );
+void nrf_spu_gpio_clear( uint16_t id );
+void nrf_spu_nsc( uint32_t address );
 /*-----------------------------------------------------------*/
 
 /* Secure main(). */
 int main(void)
 {
-    /* Remove this function once FreeRTOS is deployed */
-    SystemInitHook();
-    printf( "Booting Secure World.\n" );
+    printf( "Booting Secure World.\r\n" );
+
+    /* Set floating point coprosessor access mode.
+     * Set CP10 and CP11 full access from Non-Secure code. */
+    SCB_NS->CPACR |= ( ( 3UL << 10 * 2 ) | ( 3UL << 11 * 2 ) );
+
+    prvSetupSPU();
 
     /* Boot the non-secure code. */
     printf( "Booting Non-Secure World.\r\n" );
@@ -96,12 +122,85 @@ static void prvBootNonSecure( uint32_t ulNonSecureStartAddress )
 }
 /*-----------------------------------------------------------*/
 
-void SystemInitHook( void )
+static void prvSetupSPU( void )
 {
-    /* The TrustZone should be configured as early as possible after RESET.
-     * Therefore it is called from SystemInit() during startup. The
-     * SystemInitHook() weak function overloading is used for this purpose.
-     */
-    BOARD_InitTrustZone();
+  uint16_t rgn;
+
+  /* Configure non-secure memory */
+  for ( rgn = mainNONSECURE_APP_START_ADDRESS / SPU_FLASHREGION_SIZE; rgn < SPU_NUM_REGIONS; rgn++ )
+  {
+    nrf_spu_flashregion_clear(rgn, SPU_FLASHREGION_PERM_SECATTR_Msk);
+   }
+  for ( rgn = ( mainNONSECURE_RAM_START_ADDRESS & RAM_ADDRESS_MASK ) / SPU_RAMREGION_SIZE; rgn < SPU_NUM_REGIONS; rgn++ )
+  {
+    nrf_spu_ramregion_clear( rgn, SPU_RAMREGION_PERM_SECATTR_Msk );
+  }
+
+  /* Configure non-secure peripherals */
+  config_nonsecure_peripheral( NRF_P0_NS );
+
+  for ( rgn = 2; rgn < 10; rgn++ )
+  {
+    nrf_spu_gpio_clear( rgn );
+  }
+
+  config_nonsecure_peripheral( NRF_UARTE1_NS );
+  config_nonsecure_peripheral( NRF_UARTE2_NS );
+
+  /* Configure non-secure callable functions */
+  nrf_spu_nsc( NSC_FUNCTION_ADDRESS );
+}
+
+void nrf_spu_flashregion_set( uint16_t region, uint32_t flags )
+{
+  NRF_SPU_S->FLASHREGION[region].PERM |= flags;
+}
+
+void nrf_spu_flashregion_clear( uint16_t region, uint32_t flags )
+{
+  NRF_SPU_S->FLASHREGION[region].PERM &= ~flags;
+}
+
+void nrf_spu_ramregion_set( uint16_t region, uint32_t flags )
+{
+  NRF_SPU_S->RAMREGION[region].PERM |= flags;
+}
+
+void nrf_spu_ramregion_clear( uint16_t region, uint32_t flags )
+{
+  NRF_SPU_S->RAMREGION[region].PERM &= ~flags;
+}
+
+void nrf_spu_gpio_set( uint16_t id )
+{
+  NRF_SPU_S->GPIOPORT[0].PERM |= ( 1 << id );
+}
+
+void nrf_spu_gpio_clear( uint16_t id )
+{
+  NRF_SPU_S->GPIOPORT[0].PERM &= ~( 1 << id );
+}
+
+void nrf_spu_periph_set( uint16_t id, uint32_t flags )
+{
+  NRF_SPU_S->PERIPHID[id].PERM |= flags;
+}
+
+void nrf_spu_periph_clear( uint16_t id, uint32_t flags )
+{
+  NRF_SPU_S->PERIPHID[id].PERM &= ~flags;
+}
+
+void nrf_spu_nsc( uint32_t address )
+{
+  NRF_SPU_S->FLASHNSC[0].REGION = address / SPU_FLASHREGION_SIZE;
+  NRF_SPU_S->FLASHNSC[0].SIZE = SPU_NSCREGION_SIZE;
+}
+
+void config_nonsecure_peripheral( void *peripheral )
+{
+    uint32_t id = ( ( uint32_t )peripheral >> 12 ) & 0x7f;
+
+    nrf_spu_periph_clear( id, SPU_PERIPHID_PERM_SECATTR_Msk );
 }
 /*-----------------------------------------------------------*/
