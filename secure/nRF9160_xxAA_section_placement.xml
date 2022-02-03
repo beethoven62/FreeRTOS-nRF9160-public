@@ -1,6 +1,9 @@
 <!DOCTYPE Linker_Placement_File>
 <Root name="Flash Section Placement">
-  <MemorySegment name="$(FLASH_NAME:FLASH);FLASH1">
+  <MemorySegment name="$(FLASH_NAME:PRIVILEGED_FLASH);PRIVILEGED_FLASH">
+    <ProgramSection alignment="32" load="Yes" runin="privileged_data_run" name="privileged_data" />
+  </MemorySegment>
+  <MemorySegment name="$(FLASH_NAME:UNPRIVILEGED_FLASH);UNPRIVILEGED_FLASH">
     <ProgramSection alignment="0x100" load="Yes" name=".vectors" start="$(FLASH_START:)" />
     <ProgramSection alignment="4" load="Yes" name=".init" />
     <ProgramSection alignment="4" load="Yes" name=".init_rodata" />
@@ -14,7 +17,10 @@
     <ProgramSection alignment="4" load="Yes" runin=".tdata_run" name=".tdata" />
     <ProgramSection alignment="4" load="Yes" start="0x0000f000" name=".gnu.sgstubs" />
   </MemorySegment>
-  <MemorySegment name="$(RAM_NAME:RAM);SRAM;RAM1">
+  <MemorySegment name="$(RAM_NAME:PRIVILEGED_RAM);SRAM;PRIVILEGED_RAM">
+    <ProgramSection alignment="32" load="No" name="privileged_data_run" />
+  </MemorySegment>
+  <MemorySegment name="$(RAM_NAME:UNPRIVILEGED_RAM);UNPRIVILEGED_RAM">
     <ProgramSection alignment="0x100" load="No" name=".vectors_ram" start="$(RAM_START:$(SRAM_START:))" />
     <ProgramSection alignment="4" load="No" name=".fast_run" />
     <ProgramSection alignment="4" load="No" name=".data_run" />
