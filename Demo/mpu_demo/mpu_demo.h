@@ -24,27 +24,21 @@
  *
  */
 
-#ifndef __NSC_FUNCTIONS_H__
-#define __NSC_FUNCTIONS_H__
-
-#include <stdint.h>
+#ifndef __MPU_DEMO_H__
+#define __MPU_DEMO_H__
 
 /**
- * @brief Callback function pointer definition.
+ * @brief Creates all the tasks for MPU demo.
+ *
+ * The MPU demo creates 2 unprivileged tasks - One of which has Read Only access
+ * to a shared memory region while the other has Read Write access. The task
+ * with Read Only access then tries to write to the shared memory which results
+ * in a Memory fault. The fault handler examines that it is the fault generated
+ * by the task with Read Only access and if so, it recovers from the fault
+ * gracefully by moving the Program Counter to the next instruction to the one
+ * which generated the fault. If any other memory access violation occurs, the
+ * fault handler will get stuck in an infinite loop.
  */
-typedef void ( * Callback_t ) ( void );
+void vStartMPUDemo( void );
 
-/**
- * @brief Invokes the supplied callback which is on the non-secure side.
- *
- * Returns a number which is one more than the value returned in previous
- * invocation of this function. Initial invocation returns 1.
- *
- * @param pxCallback[in] The callback to invoke.
- *
- * @return A number which is one more than the value returned in previous
- * invocation of this function.
- */
-uint32_t NSCFunction( Callback_t pxCallback );
-
-#endif /* __NSC_FUNCTIONS_H__ */
+#endif /* __MPU_DEMO_H__ */
