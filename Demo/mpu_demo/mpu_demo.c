@@ -24,6 +24,8 @@
  *
  */
 
+#if configENABLE_MPU == 1
+
 /* FreeRTOS includes. */
 #include "FreeRTOS.h"
 #include "task.h"
@@ -225,3 +227,4 @@ portDONT_DISCARD void vHandleMemoryFault( uint32_t * pulFaultStackAddress )
     }
 }
 /*-----------------------------------------------------------*/
+#endif /* configENABLE_MPU == 1 */
