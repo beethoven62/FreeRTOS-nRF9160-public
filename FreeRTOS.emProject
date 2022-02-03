@@ -50,8 +50,8 @@
     <folder Name="System Files">
       <file file_name="$(SolutionDir)/lib/nRF/Source/nRF_Startup.s" />
       <file file_name="$(SolutionDir)/lib/nRF/Source/nrf9160_Vectors.s" />
-      <file file_name="thumb_crt0.s" />
       <file file_name="../lib/nRF/Source/system_nrf9160.c" />
+      <file file_name="../lib/nRF/Source/thumb_crt0.s" />
     </folder>
     <configuration
       Name="Debug"
@@ -122,8 +122,8 @@
     <folder Name="System Files">
       <file file_name="$(SolutionDir)/lib/nRF/Source/nRF_Startup.s" />
       <file file_name="$(SolutionDir)/lib/nRF/Source/nrf9160_Vectors.s" />
-      <file file_name="thumb_crt0.s" />
       <file file_name="../lib/nRF/Source/system_nrf9160.c" />
+      <file file_name="../lib/nRF/Source/thumb_crt0.s" />
     </folder>
     <configuration
       Name="Debug"
