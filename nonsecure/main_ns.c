@@ -36,6 +36,26 @@
 #include "mpu_demo.h"
 /*-----------------------------------------------------------*/
 
+/* Initialize the MPU symbols needed by the port code. */
+extern uint32_t __PRIVILEGED_FLASH_segment_start__[];
+extern uint32_t __PRIVILEGED_FLASH_segment_end__[];
+extern uint32_t __SYSCALLS_FLASH_segment_start__[];
+extern uint32_t __SYSCALLS_FLASH_segment_end__[];
+extern uint32_t __UNPRIVILEGED_FLASH_segment_start__[];
+extern uint32_t __UNPRIVILEGED_FLASH_segment_end__[];
+extern uint32_t __PRIVILEGED_RAM_segment_start__[];
+extern uint32_t __PRIVILEGED_RAM_segment_end__[];
+
+uint32_t * __privileged_functions_start__   = __PRIVILEGED_FLASH_segment_start__;
+uint32_t * __privileged_functions_end__     = ( uint32_t * )( ( uint32_t )__PRIVILEGED_FLASH_segment_end__ - ( uint32_t ) 1 );
+uint32_t * __syscalls_flash_start__         = __SYSCALLS_FLASH_segment_start__;
+uint32_t * __syscalls_flash_end__           = ( uint32_t * )( ( uint32_t )__SYSCALLS_FLASH_segment_end__ - ( uint32_t ) 1 );
+uint32_t * __unprivileged_flash_start__     = __UNPRIVILEGED_FLASH_segment_start__;
+uint32_t * __unprivileged_flash_end__       = ( uint32_t * )( ( uint32_t )__UNPRIVILEGED_FLASH_segment_end__ - ( uint32_t ) 1 );
+uint32_t * __privileged_sram_start__        = __PRIVILEGED_RAM_segment_start__;
+uint32_t * __privileged_sram_end__          = ( uint32_t * )( ( uint32_t )__PRIVILEGED_RAM_segment_end__ - ( uint32_t ) 1 );
+/*-----------------------------------------------------------*/
+
 /**
  * @brief Create all demo tasks.
  */
@@ -47,22 +67,14 @@ static void prvCreateTasks( void );
  * It calls a function called vHandleMemoryFault.
  */
 void MemManage_Handler( void ) __attribute__ ( ( naked ) );
-/*-----------------------------------------------------------*/
 
-extern uint32_t __UNPRIVILEGED_FLASH_segment_start__[];
-extern uint32_t __UNPRIVILEGED_FLASH_segment_end__[];
-extern uint32_t __PRIVILEGED_RAM_segment_start__[];
-extern uint32_t __PRIVILEGED_RAM_segment_end__[];
-
-uint32_t __unprivileged_flash_start__ = ( uint32_t )( __UNPRIVILEGED_FLASH_segment_start__ );
-uint32_t __unprivileged_flash_end__ = ( uint32_t )( ( __UNPRIVILEGED_FLASH_segment_end__ ) - 1 );
-uint32_t __privileged_sram_start__ = ( uint32_t )( __PRIVILEGED_RAM_segment_start__ );
-uint32_t __privileged_sram_end__ = ( uint32_t )( ( __PRIVILEGED_RAM_segment_end__ ) - 1 );
-/*-----------------------------------------------------------*/
-
-/* For instructions on how to build and run this demo, visit the following link:
- * https://www.freertos.org
+/**
+ * @brief Initializes the privileged_data section.
+ *
+ * Called from the startup code.
  */
+void InitializeUserMemorySections( void );
+/*-----------------------------------------------------------*/
 
 /* Non-Secure main. */
 int main( void )
@@ -85,11 +97,25 @@ int main( void )
 
 static void prvCreateTasks( void )
 {
+    InitializeUserMemorySections();
+
     /* Create tasks for the MPU Demo. */
     vStartMPUDemo();
 
     /* Create tasks for the TZ Demo. */
     vStartTZDemo();
+}
+/*-----------------------------------------------------------*/
+
+void InitializeUserMemorySections( void )
+{
+    extern uint8_t __privileged_data_load_start__[];
+    extern uint8_t __privileged_data_start__[];
+    extern uint8_t __privileged_data_end__[];
+
+    memcpy( __privileged_data_start__,
+            __privileged_data_load_start__,
+            __privileged_data_end__ - __privileged_data_start__ );
 }
 /*-----------------------------------------------------------*/
 

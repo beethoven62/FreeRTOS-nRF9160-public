@@ -60,14 +60,14 @@ extern uint32_t SystemCoreClock;
 
 /* Constants that describe the hardware and memory usage. */
 #define configCPU_CLOCK_HZ                                  SystemCoreClock
-#define configMINIMAL_STACK_SIZE                        ( ( uint16_t ) 128 )
+#define configMINIMAL_STACK_SIZE                        ( ( uint16_t ) 256 )
 #define configMINIMAL_SECURE_STACK_SIZE                   ( 1024 )
 #define configMAX_TASK_NAME_LEN                           ( 12 )
 #define configTOTAL_HEAP_SIZE                           ( ( size_t ) ( 50 * 1024 ) )
 
 /* Constants that build features in or out. */
 #define configUSE_MUTEXES                                   1
-#define configUSE_TICKLESS_IDLE                             0
+#define configUSE_TICKLESS_IDLE                             1
 #define configUSE_APPLICATION_TASK_TAG                      0
 #define configUSE_NEWLIB_REENTRANT                          0
 #define configUSE_CO_ROUTINES                               0
@@ -151,16 +151,11 @@ extern uint32_t SystemCoreClock;
  * See http://www.FreeRTOS.org/RTOS-Cortex-M3-M4.html. */
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY              ( configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << ( 8 - configPRIO_BITS ) )
 
-/* The #ifdef guards against the file being included from IAR assembly files. */
-#ifndef __IASMARM__
-
     /* Constants related to the generation of run time stats. */
     #define configGENERATE_RUN_TIME_STATS                   0
     #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()
     #define portGET_RUN_TIME_COUNTER_VALUE()                0
     #define configTICK_RATE_HZ                          ( ( TickType_t ) 100 )
-
-#endif /* __IASMARM__ */
 
 /* Enable static allocation. */
 #define configSUPPORT_STATIC_ALLOCATION                     1

@@ -40,18 +40,17 @@
     <folder Name="Source Files">
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
       <file file_name="main_s.c" />
-      <file file_name="tzm_config.c" />
-      <file file_name="../lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure/secure_context_port.c" />
-      <file file_name="../lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure/secure_context.c" />
-      <file file_name="../lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure/secure_heap.c" />
-      <file file_name="../lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure/secure_init.c" />
-      <file file_name="../Demo/tz_demo/nsc_functions.c" />
+      <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure/secure_context_port.c" />
+      <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure/secure_context.c" />
+      <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure/secure_heap.c" />
+      <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure/secure_init.c" />
+      <file file_name="$(SolutionDir)/Demo/tz_demo/nsc_functions.c" />
     </folder>
     <folder Name="System Files">
       <file file_name="$(SolutionDir)/lib/nRF/Source/nRF_Startup.s" />
       <file file_name="$(SolutionDir)/lib/nRF/Source/nrf9160_Vectors.s" />
-      <file file_name="../lib/nRF/Source/system_nrf9160.c" />
-      <file file_name="../lib/nRF/Source/thumb_crt0.s" />
+      <file file_name="$(SolutionDir)/lib/nRF/Source/system_nrf9160.c" />
+      <file file_name="$(SolutionDir)/lib/nRF/Source/thumb_crt0.s" />
     </folder>
     <configuration
       Name="Debug"
@@ -116,14 +115,14 @@
     <folder Name="Source Files">
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
       <file file_name="main_ns.c" />
-      <file file_name="../Demo/tz_demo/tz_demo.c" />
-      <file file_name="../Demo/mpu_demo/mpu_demo.c" />
+      <file file_name="$(SolutionDir)/Demo/tz_demo/tz_demo.c" />
+      <file file_name="$(SolutionDir)/Demo/mpu_demo/mpu_demo.c" />
     </folder>
     <folder Name="System Files">
       <file file_name="$(SolutionDir)/lib/nRF/Source/nRF_Startup.s" />
       <file file_name="$(SolutionDir)/lib/nRF/Source/nrf9160_Vectors.s" />
-      <file file_name="../lib/nRF/Source/system_nrf9160.c" />
-      <file file_name="../lib/nRF/Source/thumb_crt0.s" />
+      <file file_name="$(SolutionDir)/lib/nRF/Source/system_nrf9160.c" />
+      <file file_name="$(SolutionDir)/lib/nRF/Source/thumb_crt0.s" />
     </folder>
     <configuration
       Name="Debug"
@@ -131,17 +130,17 @@
       linker_additional_files="$(SolutionDir)/secure/$(OutDir)/secure_nsc.elf"
       linker_section_placement_file="nRF9160_xxAA_section_placement.xml" />
     <folder Name="FreeRTOS">
-      <file file_name="../lib/FreeRTOS/Source/croutine.c" />
-      <file file_name="../lib/FreeRTOS/Source/event_groups.c" />
-      <file file_name="../lib/FreeRTOS/Source/list.c" />
-      <file file_name="../lib/FreeRTOS/Source/queue.c" />
-      <file file_name="../lib/FreeRTOS/Source/stream_buffer.c" />
-      <file file_name="../lib/FreeRTOS/Source/tasks.c" />
-      <file file_name="../lib/FreeRTOS/Source/timers.c" />
-      <file file_name="../lib/FreeRTOS/Source/portable/GCC/ARM_CM33/non_secure/port.c" />
-      <file file_name="../lib/FreeRTOS/Source/portable/GCC/ARM_CM33/non_secure/portasm.c" />
-      <file file_name="../lib/FreeRTOS/Source/portable/Common/mpu_wrappers.c" />
-      <file file_name="../lib/FreeRTOS/Source/portable/MemMang/heap_4.c" />
+      <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/croutine.c" />
+      <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/event_groups.c" />
+      <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/list.c" />
+      <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/queue.c" />
+      <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/stream_buffer.c" />
+      <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/tasks.c" />
+      <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/timers.c" />
+      <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/portable/GCC/ARM_CM33/non_secure/port.c" />
+      <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/portable/GCC/ARM_CM33/non_secure/portasm.c" />
+      <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/portable/Common/mpu_wrappers.c" />
+      <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/portable/MemMang/heap_4.c" />
     </folder>
   </project>
   <configuration Name="Common" />
