@@ -30,6 +30,7 @@
 
 /* Device includes. */
 #include <nrf.h>
+#include "board.h"
 
 /* Task includes. */
 #include "log.h"
@@ -86,6 +87,9 @@ int main( void )
 
 static void prvCreateTasks( void )
 {
+    /* Initialize peripherals on board */
+    vBoardInit();
+
     /* Create debug logging task */
     vStartLogTask();
 

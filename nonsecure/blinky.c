@@ -7,6 +7,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#include "board.h"
 #include "log.h"
 #include "blinky.h"
 
@@ -17,19 +18,6 @@
  */
 static void *pvParameters;
 static void prvBlinkyTask( void * pvParameters );
-
-/* Configure GPIO */
-
-void nrf_gpio_dir_set( uint16_t pin );
-void nrf_gpio_dir_clear( uint16_t pin );
-static void nrf_gpio_out_set( uint16_t pin );
-void nrf_gpio_out_clear( uint16_t pin );
-void nrf_gpio_out_toggle( uint16_t pin );
-uint32_t powerof2( uint32_t number );
-uint32_t base2( uint32_t number, uint32_t base );
-
-/* Custom task delay (FreeRTOS not tolerating more than one tick) */
-void vDelay( uint16_t milliseconds );
 
 void vStartBlinkyDemo( void )
 {
@@ -75,12 +63,6 @@ static void prvBlinkyTask( void * pvParameters )
 
     vLogPrint( "Blinky\n" );
 
-    /* Set up LEDs */
-    for ( i = 2; i < 10; i++ )
-    {
-        nrf_gpio_dir_set(i);
-    }
-
     /* Start LEDs */
     for ( i = 0; ; i = ( i + 1 ) % 4 )
     {
@@ -92,59 +74,4 @@ static void prvBlinkyTask( void * pvParameters )
         nrf_gpio_out_toggle( i + 2 );
         vTaskDelay( pdMS_TO_TICKS( 1000 ) );
     }
-}
-
-void nrf_gpio_dir_set( uint16_t pin )
-{
-    NRF_P0_NS->DIRSET = ( 1 << pin );
-}
-
-void nrf_gpio_dir_clear( uint16_t pin )
-{
-    NRF_P0_NS->DIRCLR = ( 1 << pin );
-}
-
-static void nrf_gpio_out_set( uint16_t pin )
-{
-    NRF_P0_NS->OUTSET = ( 1 << pin );
-}
-
-void nrf_gpio_out_clear( uint16_t pin )
-{
-    NRF_P0_NS->OUTCLR = ( 1 << pin );
-}
-
-void nrf_gpio_out_toggle( uint16_t pin )
-{
-    uint32_t gpio;
-
-    gpio = NRF_P0_NS->OUT;
-    gpio ^= ( 1 << pin );
-    NRF_P0_NS->OUT = gpio;
-}
-
-uint32_t powerof2( uint32_t number )
-{
-    uint32_t n = number;
-    uint32_t p = 0;
-
-    while ( n > 0 )
-    {
-        p++;
-        n >>= 1;
-    }
-
-    if ( number > ( 1 << p ) )
-    {
-        p++;
-    }
-
-    return 1 << p;
-}
-
-uint32_t base2( uint32_t number, uint32_t base )
-{
-    uint32_t p = number / base;
-
-    return p * base;
 }

@@ -2,7 +2,7 @@
 #define __BLINKY_DEMO_H__
 
 /**
- * @brief Creates all the tasks for MPU demo.
+ * @brief Creates all the tasks for LED Blink demo.
  *
  * The Blinky demo creates 1 unprivileged tasks - It basically blinks the LEDs
  */

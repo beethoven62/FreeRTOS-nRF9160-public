@@ -11,6 +11,7 @@
 #include <nrf.h>
 
 /* Other includes */
+#include "board.h"
 #include "log.h"
 
 static uint32_t uiMessageID;
@@ -73,6 +74,8 @@ void prvLogTask( void *prvParameters )
         else 
         {
             /* xLogMessage now contains the received data. */
+            printf( "UART1: %d bytes transmitted.\n", nrf_uart_tx( NRF_UARTE1_NS, &xLogMessage.ucData, strlen( xLogMessage.ucData ) ) );
+
             printf( "%s", xLogMessage.ucData );
             uiMessageID++;
         } 

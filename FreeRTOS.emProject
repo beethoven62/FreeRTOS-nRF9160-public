@@ -126,6 +126,7 @@
       <file file_name="tz_demo.c" />
       <file file_name="blinky.c" />
       <file file_name="log.c" />
+      <file file_name="board.c" />
     </folder>
     <folder Name="System Files">
       <file file_name="$(SolutionDir)/lib/nRF/Source/nRF_Startup.s" />
@@ -149,8 +150,7 @@
       <file file_name="../lib/FreeRTOS/Source/timers.c" />
       <file file_name="../lib/FreeRTOS/Source/portable/GCC/ARM_CM33/non_secure/port.c" />
       <file file_name="../lib/FreeRTOS/Source/portable/GCC/ARM_CM33/non_secure/portasm.c" />
-      <file file_name="../lib/FreeRTOS/Source/portable/Common/mpu_wrappers.c">
-      </file>
+      <file file_name="../lib/FreeRTOS/Source/portable/Common/mpu_wrappers.c" />
       <file file_name="../lib/FreeRTOS/Source/portable/MemMang/heap_4.c" />
     </folder>
   </project>
