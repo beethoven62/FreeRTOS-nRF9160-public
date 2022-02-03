@@ -60,8 +60,8 @@ void BOARD_InitTrustZone( void )
     nrf_spu_gpio_clear( rgn );
   }
 
-  config_nonsecure_peripheral( NRF_UARTE0_NS );
   config_nonsecure_peripheral( NRF_UARTE1_NS );
+  config_nonsecure_peripheral( NRF_UARTE2_NS );
 
   /* Configure non-secure callable functions */
   nrf_spu_nsc( NSC_FUNCTION_ADDRESS );
