@@ -139,7 +139,7 @@ static void prvSetupSPU( void )
   /* Configure non-secure peripherals */
   config_nonsecure_peripheral( NRF_P0_NS );
 
-  for ( rgn = 2; rgn < 10; rgn++ )
+  for ( rgn = 0; rgn < 32; rgn++ )
   {
     nrf_spu_gpio_clear( rgn );
   }

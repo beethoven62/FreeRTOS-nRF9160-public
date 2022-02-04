@@ -46,7 +46,7 @@
 extern uint32_t SystemCoreClock;
 
 /* Cortex M33 port configuration. */
-#define configENABLE_MPU                                    1
+#define configENABLE_MPU                                    0
 #define configENABLE_FPU                                    1
 #define configENABLE_TRUSTZONE                              1
 
@@ -67,7 +67,7 @@ extern uint32_t SystemCoreClock;
 
 /* Constants that build features in or out. */
 #define configUSE_MUTEXES                                   1
-#define configUSE_TICKLESS_IDLE                             1
+#define configUSE_TICKLESS_IDLE                             0
 #define configUSE_APPLICATION_TASK_TAG                      0
 #define configUSE_NEWLIB_REENTRANT                          0
 #define configUSE_CO_ROUTINES                               0

@@ -1,5 +1,6 @@
 /* Trying out the peripherals on the nRF9160 starting out with the LEDs on the nRF9160DK */
 
+/* Standard includes. */
 #include <stdio.h>
 #include <nrf.h>
 
@@ -7,6 +8,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+/* Other includes */
 #include "board.h"
 #include "log.h"
 #include "blinky.h"
@@ -61,13 +63,13 @@ static void prvBlinkyTask( void * pvParameters )
     uint32_t j;
     char ucBuf[ LOG_MSG_MAX ];
 
-    vLogPrint( "Blinky\n" );
+    vLogPrint( "Blinky\r\n" );
 
     /* Start LEDs */
     for ( i = 0; ; i = ( i + 1 ) % 4 )
     {
         /* This task will blink the LEDs */
-        sprintf( ucBuf, "LED #%d\n", i );
+        sprintf( ucBuf, "LED #%d\r\n", i );
         vLogPrint( ucBuf );
         nrf_gpio_out_toggle( i + 2 );
         vTaskDelay( pdMS_TO_TICKS( 1000 ) );

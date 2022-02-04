@@ -24,12 +24,18 @@
  *
  */
 
+/* Standard includes. */
+#include <stdio.h>
+
 /* FreeRTOS includes. */
 #include "FreeRTOS.h"
 #include "task.h"
 
 /* Non-Secure callable functions. */
 #include "nsc_functions.h"
+
+/* Other includes */
+#include "log.h"
 
 /**
  * @brief Counter incremented in the callback which is called from the secure
@@ -111,6 +117,9 @@ static void prvSecureCallingTask( void * pvParameters )
 {
     uint32_t ulLastSecureCounter = 0, ulLastNonSecureCounter = 0;
     uint32_t ulCurrentSecureCounter = 0;
+    char ucBuf[ LOG_MSG_MAX ];
+
+    vLogPrint( "TrustZone\r\n" );
 
     /* This task calls secure side functions. So allocate a secure context for
      * it. */
@@ -125,6 +134,7 @@ static void prvSecureCallingTask( void * pvParameters )
          * Therefore at the end of this function call both the secure and
          * non-secure counters must have been incremented.
          */
+        
         ulCurrentSecureCounter = NSCFunction( prvCallback );
 
         /* Make sure that both the counters are incremented. */
@@ -134,6 +144,9 @@ static void prvSecureCallingTask( void * pvParameters )
         /* Update the last values for both the counters. */
         ulLastSecureCounter = ulCurrentSecureCounter;
         ulLastNonSecureCounter = ulNonSecureCounter[ 0 ];
+
+        sprintf( ucBuf, "Secure count: %d\r\n", ulCurrentSecureCounter );
+        vLogPrint( ucBuf );
 
         /* Wait for a second. */
         vTaskDelay( pdMS_TO_TICKS( 1000 ) );

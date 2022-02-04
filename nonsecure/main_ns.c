@@ -105,6 +105,7 @@ int main( void )
 
 static void prvCreateTasks( void )
 {
+    /* Initialize static memory variables */
     InitializeUserMemorySections();
 
     /* Initialize peripherals on board */

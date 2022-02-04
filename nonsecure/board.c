@@ -1,8 +1,17 @@
 /* Set up peripherals for board */
 
+/* Standard includes. */
 #include <stddef.h>
 #include <stdbool.h>
+
+/* FreeRTOS includes. */
+#include "FreeRTOS.h"
+#include "task.h"
+
+/* Device includes. */
 #include <nrf.h>
+
+/* Other includes */
 #include "board.h"
 
 #define UART1_TX_PIN    ( 29 )
@@ -117,6 +126,7 @@ uint32_t nrf_uart_tx( NRF_UARTE_Type* uart, void* txbuf, uint32_t txlen )
 
         while( uart->EVENTS_ENDTX == UARTE_EVENTS_ENDTX_EVENTS_ENDTX_NotGenerated );
         nbytes = uart->TXD.AMOUNT;
+        vTaskDelay( pdMS_TO_TICKS( 10 ) );
     }
 
     return nbytes;
