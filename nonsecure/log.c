@@ -18,6 +18,7 @@
 static uint32_t uiMessageID;
 static QueueHandle_t xLogQueue;
 static void prvLogTask( void *prvParameters );
+static LogMessage_t xLogMessage;
 
 void vStartLogTask( void )
 {
@@ -38,7 +39,7 @@ void vStartLogTask( void )
         .puxStackBuffer = xLogTaskStack,
         .xRegions       =
         {
-            { 0,    0,    0 },
+            { ( void *)xLogQueue, sizeof( QueueHandle_t ), portMPU_REGION_READ_WRITE | portMPU_REGION_EXECUTE_NEVER },
             { 0,    0,    0 },
             { 0,    0,    0 },
         }
@@ -59,8 +60,6 @@ void vStartLogTask( void )
 
 void prvLogTask( void *prvParameters )
 {
-    LogMessage_t xLogMessage;
-
     for( ; ; ) 
     {
         /* Wait for the maximum period for data to become available on the queue. 
@@ -75,10 +74,9 @@ void prvLogTask( void *prvParameters )
         else 
         {
             /* xLogMessage now contains the received data. */
-            printf( "UART1: %d bytes transmitted.\n", nrf_uart_tx( NRF_UARTE1_NS, &xLogMessage.ucData, strlen( xLogMessage.ucData ) ) );
+            printf( "UART1: %d bytes transmitted.\n", nrf_uart_tx( NRF_UARTE1_NS, xLogMessage.cData, strlen( xLogMessage.cData ) ) );
 
-            printf( "%s", xLogMessage.ucData );
-            uiMessageID++;
+            printf( "ID: %d, Message: %s", xLogMessage.uiLogMessageID, xLogMessage.cData );
         } 
     }
 }
@@ -93,12 +91,12 @@ uint32_t uiGetMessageID( void )
     return uiMessageID;
 }
 
-void vLogPrint( char * pcLogMessage )
+void vLogPrint( char *pcLogMessage )
 {
     LogMessage_t xLogMessage;
 
-    strcpy(xLogMessage.ucData, pcLogMessage);
-    xLogMessage.ucLogMessageID = uiMessageID;
+    strcpy( xLogMessage.cData, pcLogMessage );
+    xLogMessage.uiLogMessageID = uiMessageID;
     if ( xQueueSend(xGetLogHandle(), &xLogMessage, pdMS_TO_TICKS( 100 ) ) != pdPASS )
     {
         /* Message failed to send */

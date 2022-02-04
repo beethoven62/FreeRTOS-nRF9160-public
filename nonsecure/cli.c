@@ -66,7 +66,10 @@ void prvCLITask( void *prvParameters )
         {
             nbytes = nbytes < LOG_MSG_MAX ? nbytes : LOG_MSG_MAX - 1;
             ucBuf[ nbytes ] = 0;
-            printf( "%s", ucBuf );
+            if ( strlen( ucBuf ) > 0 )
+            {
+                printf( "Received: %s\n", ucBuf );
+            }
             ucBuf[ 0 ] = 0;
         }
     }

@@ -9,8 +9,8 @@
 /* Define the stucture of the log message that will be queued */
 typedef struct LogMessage
 {
-    uint32_t ucLogMessageID;
-    char ucData[ LOG_MSG_MAX ];
+    uint32_t uiLogMessageID;
+    char cData[ LOG_MSG_MAX ];
 } LogMessage_t;
 
 /**
