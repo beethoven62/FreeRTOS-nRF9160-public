@@ -120,6 +120,7 @@
       <file file_name="blinky.c" />
       <file file_name="log.c" />
       <file file_name="board.c" />
+      <file file_name="cli.c" />
     </folder>
     <folder Name="System Files">
       <file file_name="$(SolutionDir)/lib/nRF/Source/nRF_Startup.s" />

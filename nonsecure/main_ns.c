@@ -111,8 +111,9 @@ static void prvCreateTasks( void )
     /* Initialize peripherals on board */
     vBoardInit();
 
-    /* Create debug logging task */
+    /* Create debug interface tasks */
     vStartLogTask();
+    vStartCLITask();
 
     /* Create tasks for the TZ Demo. */
     vStartTZDemo();

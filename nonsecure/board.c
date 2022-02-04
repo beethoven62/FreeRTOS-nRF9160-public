@@ -124,7 +124,10 @@ uint32_t nrf_uart_tx( NRF_UARTE_Type* uart, void* txbuf, uint32_t txlen )
         uart->TXD.MAXCNT = txlen;
         uart->TASKS_STARTTX = UARTE_TASKS_STARTTX_TASKS_STARTTX_Trigger;
 
-        while( uart->EVENTS_ENDTX == UARTE_EVENTS_ENDTX_EVENTS_ENDTX_NotGenerated );
+        while ( uart->EVENTS_ENDTX == UARTE_EVENTS_ENDTX_EVENTS_ENDTX_NotGenerated )
+        {
+            taskYIELD();
+        }
         nbytes = uart->TXD.AMOUNT;
         vTaskDelay( pdMS_TO_TICKS( 10 ) );
     }
@@ -142,7 +145,10 @@ uint32_t nrf_uart_rx( NRF_UARTE_Type* uart, void* rxbuf, uint32_t rxlen )
         uart->RXD.MAXCNT = rxlen;
         uart->TASKS_STARTRX = UARTE_TASKS_STARTRX_TASKS_STARTRX_Trigger;
 
-        while( uart->EVENTS_ENDRX == UARTE_EVENTS_ENDRX_EVENTS_ENDRX_NotGenerated ); // This needs improvement
+        while( uart->EVENTS_ENDRX == UARTE_EVENTS_ENDRX_EVENTS_ENDRX_NotGenerated  )
+        {
+            taskYIELD();
+        }
         nbytes = uart->RXD.AMOUNT;
     }
 
