@@ -42,6 +42,7 @@
     #include "mpu_demo.h"
 #endif /* configENABLE_MPU == 1 */
 #include "blinky.h"
+#include "cli.h"
 /*-----------------------------------------------------------*/
 
 /* Initialize the MPU symbols needed by the port code. */

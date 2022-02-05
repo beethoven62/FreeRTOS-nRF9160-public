@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 /* FreeRTOS include. */
 #include "FreeRTOS.h"
@@ -19,6 +20,7 @@ static uint32_t uiMessageID;
 static QueueHandle_t xLogQueue;
 static void prvLogTask( void *prvParameters );
 static LogMessage_t xLogMessage;
+static uint8_t bLogFlag;
 
 void vStartLogTask( void )
 {
@@ -39,8 +41,8 @@ void vStartLogTask( void )
         .puxStackBuffer = xLogTaskStack,
         .xRegions       =
         {
-            { ( void *)xLogQueue, sizeof( QueueHandle_t ), portMPU_REGION_READ_WRITE | portMPU_REGION_EXECUTE_NEVER },
-            { 0,    0,    0 },
+            { ( void * )xLogQueue, LOG_QUEUE_LEN * sizeof( LogMessage_t ), portMPU_REGION_READ_WRITE | portMPU_REGION_EXECUTE_NEVER },
+            { ( void * )uiMessageID, sizeof( uint32_t ), portMPU_REGION_READ_WRITE | portMPU_REGION_EXECUTE_NEVER },
             { 0,    0,    0 },
         }
     };
@@ -60,6 +62,8 @@ void vStartLogTask( void )
 
 void prvLogTask( void *prvParameters )
 {
+    bLogFlag = true;
+
     for( ; ; ) 
     {
         /* Wait for the maximum period for data to become available on the queue. 
@@ -74,7 +78,10 @@ void prvLogTask( void *prvParameters )
         else 
         {
             /* xLogMessage now contains the received data. */
-            printf( "UART1: %d bytes transmitted.\n", nrf_uart_tx( NRF_UARTE1_NS, xLogMessage.cData, strlen( xLogMessage.cData ) ) );
+            if ( bLogFlag )
+            {
+                printf( "UART1: %d bytes transmitted.\n", nrf_uart_tx( NRF_UARTE1_NS, xLogMessage.cData, strlen( xLogMessage.cData ) ) );
+            }
 
             printf( "ID: %d, Message: %s", xLogMessage.uiLogMessageID, xLogMessage.cData );
         } 
@@ -103,4 +110,9 @@ void vLogPrint( char *pcLogMessage )
     }
 
     uiMessageID++;
+}
+
+void vSetFlag( bool bFlag )
+{
+    bLogFlag = bFlag;
 }
