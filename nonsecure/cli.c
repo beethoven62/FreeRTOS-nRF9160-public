@@ -56,21 +56,29 @@ void vStartCLITask( void )
 void prvCLITask( void *prvParameters )
 {
     uint32_t nbytes;
-    char ucBuf[ LOG_MSG_MAX ];
+    char cBuf[ LOG_MSG_MAX ];
 
     vLogPrint( "CLI Task\r\n" );
 
     for( ; ; ) 
     {
-        if ( ( nbytes = nrf_uart_rx( NRF_UARTE1_NS, ucBuf, 1 ) ) > 0 )
+        if ( ( nbytes = nrf_uart_rx( NRF_UARTE1_NS, cBuf, 1 ) ) > 0 )
         {
             nbytes = nbytes < LOG_MSG_MAX ? nbytes : LOG_MSG_MAX - 1;
-            ucBuf[ nbytes ] = 0;
-            if ( strlen( ucBuf ) > 0 )
+            cBuf[ nbytes ] = 0;
+            if ( strlen( cBuf ) > 0 )
             {
-                printf( "Received: %s\n", ucBuf );
+                printf( "Received: %s\n", cBuf );
+                if ( cBuf[ 0 ] == 'x' || cBuf == 'X' )
+                {
+                    vSetFlag( false );
+                }
+                else
+                {
+                    vSetFlag( true );
+                }
             }
-            ucBuf[ 0 ] = 0;
+            cBuf[ 0 ] = 0;
         }
     }
 }
