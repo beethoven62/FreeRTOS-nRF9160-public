@@ -15,19 +15,16 @@
 #include "board.h"
 #include "log.h"
 
-static uint32_t uiMessageID;
-static QueueHandle_t xLogQueue;
+QueueHandle_t xLogQueueHandle = NULL;
+static StaticQueue_t xLogQueue;
 static void prvLogTask( void *prvParameters );
-static LogMessage_t xLogMessage;
 
 void vStartLogTask( void )
 {
     uint16_t i;
 
     /* Set up log task */
-    uiMessageID = 0;
-    xLogQueue = xQueueCreate( LOG_QUEUE_LEN, LOG_MSG_MAX );
-    vQueueAddToRegistry( xLogQueue, "Log Queue" );
+    xLogQueueHandle = xQueueCreate( LOG_QUEUE_LEN, sizeof( LogMessage_t ) );
     static StackType_t xLogTaskStack[ configMINIMAL_STACK_SIZE ] __attribute__( ( aligned( 32 ) ) );
     TaskParameters_t xLogTaskParameters =
     {
@@ -39,9 +36,9 @@ void vStartLogTask( void )
         .puxStackBuffer = xLogTaskStack,
         .xRegions       =
         {
-            { ( void *)xLogQueue, sizeof( QueueHandle_t ), portMPU_REGION_READ_WRITE | portMPU_REGION_EXECUTE_NEVER },
-            { 0,    0,    0 },
-            { 0,    0,    0 },
+            { ( void *)xLogQueueHandle, sizeof( xLogQueueHandle ), portMPU_REGION_READ_WRITE | portMPU_REGION_EXECUTE_NEVER },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
         }
     };
 
@@ -60,47 +57,47 @@ void vStartLogTask( void )
 
 void prvLogTask( void *prvParameters )
 {
+    LogMessage_t xLogMessageRx;
+    uint32_t uiMessageID = 0;
+
     for( ; ; ) 
     {
         /* Wait for the maximum period for data to become available on the queue. 
          * The period will be indefinite if INCLUDE_vTaskSuspend is set to 1 in 
          * FreeRTOSConfig.h. 
          */
-        if( xQueueReceive( xLogQueue, &xLogMessage, portMAX_DELAY ) != pdPASS )
+        //if( xQueueReceive( xLogQueue, &xLogMessage, portMAX_DELAY ) != pdPASS )
+        if( xQueueReceive( xLogQueueHandle, &xLogMessageRx, portMAX_DELAY ) != pdPASS )
         {
             /* Nothing was received from the queue even after blocking to wait
              * for data to arrive. */
         } 
         else 
         {
-            /* xLogMessage now contains the received data. */
-            printf( "UART1: %d bytes transmitted.\n", nrf_uart_tx( NRF_UARTE1_NS, xLogMessage.cData, strlen( xLogMessage.cData ) ) );
+            /* Message received, increment message ID counter */
+            uiMessageID++;
 
-            printf( "ID: %d, Message: %s", xLogMessage.uiLogMessageID, xLogMessage.cData );
+            /* xLogMessage now contains the received data. */
+            printf( "UART1: %d bytes transmitted.\n", nrf_uart_tx( NRF_UARTE1_NS, xLogMessageRx.ucData, strlen( xLogMessageRx.ucData ) ) );
+
+            printf( "ID: %d, Message: %s", xLogMessageRx.uiLogMessageID, xLogMessageRx.ucData );
         } 
     }
 }
 
 QueueHandle_t xGetLogHandle( void )
 {
-    return xLogQueue;
-}
-
-uint32_t uiGetMessageID( void )
-{
-    return uiMessageID;
+    return xLogQueueHandle;
 }
 
 void vLogPrint( char *pcLogMessage )
 {
-    LogMessage_t xLogMessage;
+    LogMessage_t xLogMessageTx;
 
-    strcpy( xLogMessage.cData, pcLogMessage );
-    xLogMessage.uiLogMessageID = uiMessageID;
-    if ( xQueueSend(xGetLogHandle(), &xLogMessage, pdMS_TO_TICKS( 100 ) ) != pdPASS )
+    strcpy( xLogMessageTx.ucData, pcLogMessage );
+    xLogMessageTx.uiLogMessageID = 0;
+    if ( xQueueSend( xLogQueueHandle, &xLogMessageTx, pdMS_TO_TICKS( 100 ) ) != pdPASS )
     {
         /* Message failed to send */
     }
-
-    uiMessageID++;
 }

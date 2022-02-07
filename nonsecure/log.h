@@ -10,7 +10,7 @@
 typedef struct LogMessage
 {
     uint32_t uiLogMessageID;
-    char cData[ LOG_MSG_MAX ];
+    char ucData[ LOG_MSG_MAX ];
 } LogMessage_t;
 
 /**
@@ -21,6 +21,5 @@ typedef struct LogMessage
 void vStartLogTask( void );
 void vLogPrint( char * pcLogMessage );
 QueueHandle_t xGetLogHandle( void );
-uint32_t uiGetMessageID( void );
 
 #endif /* __LOG_DEMO_H__ */
