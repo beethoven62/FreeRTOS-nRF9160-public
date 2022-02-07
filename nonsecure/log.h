@@ -1,6 +1,7 @@
 #ifndef __LOG_DEMO_H__
 #define __LOG_DEMO_H__
 
+#include <stdbool.h>
 #include "queue.h"
 
 #define LOG_QUEUE_LEN   ( 5 )
@@ -21,5 +22,6 @@ typedef struct LogMessage
 void vStartLogTask( void );
 void vLogPrint( char * pcLogMessage );
 QueueHandle_t xGetLogHandle( void );
+void vSetFlag( bool bFlag );
 
 #endif /* __LOG_DEMO_H__ */

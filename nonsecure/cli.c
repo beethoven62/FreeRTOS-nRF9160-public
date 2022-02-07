@@ -69,7 +69,7 @@ void prvCLITask( void *prvParameters )
             if ( strlen( cBuf ) > 0 )
             {
                 printf( "Received: %s\n", cBuf );
-                if ( cBuf[ 0 ] == 'x' || cBuf == 'X' )
+                if ( cBuf[ 0 ] == 'x' || cBuf[ 0 ] == 'X' )
                 {
                     vSetFlag( false );
                 }

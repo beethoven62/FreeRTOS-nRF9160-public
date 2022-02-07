@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 /* FreeRTOS include. */
 #include "FreeRTOS.h"
@@ -18,6 +19,7 @@
 QueueHandle_t xLogQueueHandle = NULL;
 static StaticQueue_t xLogQueue;
 static void prvLogTask( void *prvParameters );
+static uint8_t bLogFlag;
 
 void vStartLogTask( void )
 {
@@ -59,6 +61,7 @@ void prvLogTask( void *prvParameters )
 {
     LogMessage_t xLogMessageRx;
     uint32_t uiMessageID = 0;
+    bLogFlag = true;
 
     for( ; ; ) 
     {
@@ -78,7 +81,10 @@ void prvLogTask( void *prvParameters )
             uiMessageID++;
 
             /* xLogMessage now contains the received data. */
-            printf( "UART1: %d bytes transmitted.\n", nrf_uart_tx( NRF_UARTE1_NS, xLogMessageRx.ucData, strlen( xLogMessageRx.ucData ) ) );
+            if ( bLogFlag )
+            {
+                printf( "UART1: %d bytes transmitted.\n", nrf_uart_tx( NRF_UARTE1_NS, xLogMessageRx.ucData, strlen( xLogMessageRx.ucData ) ) );
+            }
 
             printf( "ID: %d, Message: %s", xLogMessageRx.uiLogMessageID, xLogMessageRx.ucData );
         } 
@@ -100,4 +106,9 @@ void vLogPrint( char *pcLogMessage )
     {
         /* Message failed to send */
     }
+}
+
+void vSetFlag( bool bFlag )
+{
+    bLogFlag = bFlag;
 }
