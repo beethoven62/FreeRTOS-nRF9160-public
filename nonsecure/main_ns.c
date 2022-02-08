@@ -24,6 +24,9 @@
  *
  */
 
+/* Standard includes. */
+#include <string.h>
+
 /* FreeRTOS include. */
 #include "FreeRTOS.h"
 #include "task.h"
@@ -37,23 +40,23 @@
 /*-----------------------------------------------------------*/
 
 /* Initialize the MPU symbols needed by the port code. */
-extern uint32_t __PRIVILEGED_FLASH_segment_start__[];
-extern uint32_t __PRIVILEGED_FLASH_segment_end__[];
-extern uint32_t __SYSCALLS_FLASH_segment_start__[];
-extern uint32_t __SYSCALLS_FLASH_segment_end__[];
-extern uint32_t __UNPRIVILEGED_FLASH_segment_start__[];
-extern uint32_t __UNPRIVILEGED_FLASH_segment_end__[];
-extern uint32_t __PRIVILEGED_RAM_segment_start__[];
-extern uint32_t __PRIVILEGED_RAM_segment_end__[];
+extern uint32_t __PRIVILEGED_FLASH_NS_segment_start__[];
+extern uint32_t __PRIVILEGED_FLASH_NS_segment_end__[];
+extern uint32_t __SYSCALLS_FLASH_NS_segment_start__[];
+extern uint32_t __SYSCALLS_FLASH_NS_segment_end__[];
+extern uint32_t __UNPRIVILEGED_FLASH_NS_segment_start__[];
+extern uint32_t __UNPRIVILEGED_FLASH_NS_segment_end__[];
+extern uint32_t __PRIVILEGED_RAM_NS_segment_start__[];
+extern uint32_t __PRIVILEGED_RAM_NS_segment_end__[];
 
-uint32_t * __privileged_functions_start__   = __PRIVILEGED_FLASH_segment_start__;
-uint32_t * __privileged_functions_end__     = ( uint32_t * )( ( uint32_t )__PRIVILEGED_FLASH_segment_end__ - ( uint32_t ) 1 );
-uint32_t * __syscalls_flash_start__         = __SYSCALLS_FLASH_segment_start__;
-uint32_t * __syscalls_flash_end__           = ( uint32_t * )( ( uint32_t )__SYSCALLS_FLASH_segment_end__ - ( uint32_t ) 1 );
-uint32_t * __unprivileged_flash_start__     = __UNPRIVILEGED_FLASH_segment_start__;
-uint32_t * __unprivileged_flash_end__       = ( uint32_t * )( ( uint32_t )__UNPRIVILEGED_FLASH_segment_end__ - ( uint32_t ) 1 );
-uint32_t * __privileged_sram_start__        = __PRIVILEGED_RAM_segment_start__;
-uint32_t * __privileged_sram_end__          = ( uint32_t * )( ( uint32_t )__PRIVILEGED_RAM_segment_end__ - ( uint32_t ) 1 );
+uint32_t * __privileged_functions_start__   = __PRIVILEGED_FLASH_NS_segment_start__;
+uint32_t * __privileged_functions_end__     = ( uint32_t * )( ( uint32_t )__PRIVILEGED_FLASH_NS_segment_end__ - ( uint32_t ) 1 );
+uint32_t * __syscalls_flash_start__         = __SYSCALLS_FLASH_NS_segment_start__;
+uint32_t * __syscalls_flash_end__           = ( uint32_t * )( ( uint32_t )__SYSCALLS_FLASH_NS_segment_end__ - ( uint32_t ) 1 );
+uint32_t * __unprivileged_flash_start__     = __UNPRIVILEGED_FLASH_NS_segment_start__;
+uint32_t * __unprivileged_flash_end__       = ( uint32_t * )( ( uint32_t )__UNPRIVILEGED_FLASH_NS_segment_end__ - ( uint32_t ) 1 );
+uint32_t * __privileged_sram_start__        = __PRIVILEGED_RAM_NS_segment_start__;
+uint32_t * __privileged_sram_end__          = ( uint32_t * )( ( uint32_t )__PRIVILEGED_RAM_NS_segment_end__ - ( uint32_t ) 1 );
 /*-----------------------------------------------------------*/
 
 /**
@@ -97,6 +100,7 @@ int main( void )
 
 static void prvCreateTasks( void )
 {
+    /* Initialize static memory variables */
     InitializeUserMemorySections();
 
     /* Create tasks for the MPU Demo. */

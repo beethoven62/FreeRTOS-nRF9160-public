@@ -647,10 +647,10 @@ static void prvTaskExitError( void )
             /* Setup unprivileged flash as Read Only by both privileged and
              * unprivileged tasks. All tasks can read it but no-one can modify. */
             portMPU_RNR_REG = portUNPRIVILEGED_FLASH_REGION;
-            portMPU_RBAR_REG = ( ( ( uint32_t ) ( *__unprivileged_flash_start__ ) ) & portMPU_RBAR_ADDRESS_MASK ) |
+            portMPU_RBAR_REG = ( ( ( uint32_t ) ( __unprivileged_flash_start__ ) ) & portMPU_RBAR_ADDRESS_MASK ) |
                                ( portMPU_REGION_NON_SHAREABLE ) |
                                ( portMPU_REGION_READ_ONLY );
-            portMPU_RLAR_REG = ( ( ( uint32_t ) ( *__unprivileged_flash_end__ ) ) & portMPU_RLAR_ADDRESS_MASK ) |
+            portMPU_RLAR_REG = ( ( ( uint32_t ) ( __unprivileged_flash_end__ ) ) & portMPU_RLAR_ADDRESS_MASK ) |
                                ( portMPU_RLAR_ATTR_INDEX0 ) |
                                ( portMPU_RLAR_REGION_ENABLE );
 
@@ -666,11 +666,11 @@ static void prvTaskExitError( void )
 
             /* Setup RAM containing kernel data for privileged access only. */
             portMPU_RNR_REG = portPRIVILEGED_RAM_REGION;
-            portMPU_RBAR_REG = ( ( ( uint32_t ) ( *__privileged_sram_start__ ) ) & portMPU_RBAR_ADDRESS_MASK ) |
+            portMPU_RBAR_REG = ( ( ( uint32_t ) ( __privileged_sram_start__ ) ) & portMPU_RBAR_ADDRESS_MASK ) |
                                ( portMPU_REGION_NON_SHAREABLE ) |
                                ( portMPU_REGION_PRIVILEGED_READ_WRITE ) |
                                ( portMPU_REGION_EXECUTE_NEVER );
-            portMPU_RLAR_REG = ( ( ( uint32_t ) ( *__privileged_sram_end__ ) ) & portMPU_RLAR_ADDRESS_MASK ) |
+            portMPU_RLAR_REG = ( ( ( uint32_t ) ( __privileged_sram_end__ ) ) & portMPU_RLAR_ADDRESS_MASK ) |
                                ( portMPU_RLAR_ATTR_INDEX0 ) |
                                ( portMPU_RLAR_REGION_ENABLE );
 
