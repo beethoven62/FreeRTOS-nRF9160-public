@@ -126,6 +126,7 @@
       <file file_name="main_ns.c" />
       <file file_name="$(SolutionDir)/Demo/tz_demo/tz_demo.c" />
       <file file_name="$(SolutionDir)/Demo/mpu_demo/mpu_demo.c" />
+      <file file_name="board.c" />
     </folder>
     <folder Name="System Files">
       <file file_name="$(SolutionDir)/lib/nRF/Source/nRF_Startup.s" />

@@ -33,6 +33,7 @@
 
 /* Device includes. */
 #include <nrf.h>
+#include "board.h"
 
 /* Demo includes. */
 #include "tz_demo.h"
@@ -103,6 +104,8 @@ static void prvCreateTasks( void )
     /* Initialize static memory variables */
     InitializeUserMemorySections();
 
+    /* Initialize peripherals on board */
+    vBoardInit();
     /* Create tasks for the MPU Demo. */
     vStartMPUDemo();
 
