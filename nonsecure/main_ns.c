@@ -115,13 +115,13 @@ static void prvCreateTasks( void )
 
     /* Create debug interface tasks */
     vStartLogTask();
-    vStartCLITask();
+    //vStartCLITask();
 
     /* Create tasks for the TZ Demo. */
-    vStartTZDemo();
+    //vStartTZDemo();
 #if configENABLE_MPU == 1
     /* Create tasks for the MPU Demo. */
-    vStartMPUDemo();
+    //vStartMPUDemo();
 #endif /* configENABLE_MPU == 1 */
 
     /* Create task for the Blinky Demo. */
@@ -310,6 +310,8 @@ portDONT_DISCARD void vHandleMemoryFault( uint32_t * pulFaultStackAddress )
 /* Demo includes. */
 //#include "tz_demo.h"
 //#include "mpu_demo.h"
+#include "blinky.h"
+
 /*-----------------------------------------------------------*/
 
 /* Initialize the MPU symbols needed by the port code. */
@@ -331,6 +333,8 @@ uint32_t * __unprivileged_flash_end__       = ( uint32_t * )( ( uint32_t )__UNPR
 uint32_t * __privileged_sram_start__        = __PRIVILEGED_RAM_NS_segment_start__;
 uint32_t * __privileged_sram_end__          = ( uint32_t * )( ( uint32_t )__PRIVILEGED_RAM_NS_segment_end__ - ( uint32_t ) 1 );
 /*-----------------------------------------------------------*/
+
+QueueHandle_t xQueue = NULL;
 
 /**
  * @brief Create all demo tasks.
@@ -389,17 +393,17 @@ static void prvCreateTasks( void )
         .puxStackBuffer = xReaderTaskStack,
         .xRegions       =
         {
-            { 0            ,        0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
         }
     };
     TaskParameters_t xWriterTaskParameters =
@@ -412,33 +416,35 @@ static void prvCreateTasks( void )
         .puxStackBuffer = xWriterTaskStack,
         .xRegions       =
         {
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
-            { 0,                    0,  0                                                      },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
         }
     };
 
-    QueueHandle_t xQueue = xQueueCreate( 5, 32 * sizeof( uint8_t ) );
+    xQueue = xQueueCreate( 5, 32 * sizeof( uint8_t ) );
 
     xReaderTaskParameters.pvParameters = ( void * )xQueue;
     xWriterTaskParameters.pvParameters = ( void * )xQueue;
 
     xTaskCreateRestricted( &( xReaderTaskParameters ), NULL );
-    xTaskCreateRestricted( &( xWriterTaskParameters ), NULL );
+    //xTaskCreateRestricted( &( xWriterTaskParameters ), NULL );
 
     /* Create tasks for the MPU Demo. */
     /* vStartMPUDemo(); */
 
     /* Create tasks for the TZ Demo. */
     /* vStartTZDemo(); */
+
+    vStartBlinkyDemo();
 }
 /*-----------------------------------------------------------*/
 

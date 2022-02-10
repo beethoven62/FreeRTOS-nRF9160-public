@@ -21,6 +21,8 @@
 static void *pvParameters;
 static void prvBlinkyTask( void * pvParameters );
 
+extern xQueue;
+
 void vStartBlinkyDemo( void )
 {
     uint16_t i;
@@ -35,11 +37,20 @@ void vStartBlinkyDemo( void )
         .puxStackBuffer = xBlinkyTaskStack,
         .xRegions       =
         {
-            { ( void *)NRF_P0_NS, sizeof( NRF_GPIO_Type ), portMPU_REGION_READ_WRITE | portMPU_REGION_EXECUTE_NEVER },
-            { 0,                                                       0,                                   0                                                      },
-            { 0,                                                       0,                                   0                                                      },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
         }
     };
+    xBlinkyTaskParameters.pvParameters = ( void* )xQueue; // xGetLogHandle();
 
     /* Create an unprivileged task. */
 #if configENABLE_MPU == 1
@@ -62,15 +73,18 @@ static void prvBlinkyTask( void * pvParameters )
     uint16_t i;
     uint32_t j;
     char ucBuf[ LOG_MSG_MAX ];
+    QueueHandle_t xQueue = ( QueueHandle_t )pvParameters;
 
-    vLogPrint( "Blinky\r\n" );
+    //vLogPrint( "Blinky\r\n" );
+    xQueueSend( xQueue, "Blinky\r\n", 0 );
 
     /* Start LEDs */
     for ( i = 0; ; i = ( i + 1 ) % 4 )
     {
         /* This task will blink the LEDs */
         sprintf( ucBuf, "LED #%d\r\n", i );
-        vLogPrint( ucBuf );
+        xQueueSend( xQueue, ucBuf, 0 );
+        //vLogPrint( ucBuf );
         nrf_gpio_out_toggle( i + 2 );
         vTaskDelay( pdMS_TO_TICKS( 1000 ) );
         nrf_gpio_out_toggle( i + 2 );

@@ -19,7 +19,6 @@
 QueueHandle_t xLogQueueHandle = NULL;
 static StaticQueue_t xLogQueue;
 static void prvLogTask( void *prvParameters );
-static uint8_t bLogFlag;
 
 void vStartLogTask( void )
 {
@@ -33,12 +32,20 @@ void vStartLogTask( void )
         .pvTaskCode     = prvLogTask,
         .pcName         = "LogTask",
         .usStackDepth   = configMINIMAL_STACK_SIZE,
-        .pvParameters   = NULL,
+        .pvParameters   = ( void* )xLogQueueHandle,
         .uxPriority     = tskIDLE_PRIORITY | portPRIVILEGE_BIT,
         .puxStackBuffer = xLogTaskStack,
         .xRegions       =
         {
-            { ( void *)xLogQueueHandle, sizeof( xLogQueueHandle ), portMPU_REGION_READ_WRITE | portMPU_REGION_EXECUTE_NEVER },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
             { 0, 0, 0 },
             { 0, 0, 0 },
         }
@@ -61,7 +68,7 @@ void prvLogTask( void *prvParameters )
 {
     LogMessage_t xLogMessageRx;
     uint32_t uiMessageID = 0;
-    bLogFlag = true;
+    QueueHandle_t xQueue = ( QueueHandle_t )prvParameters;
 
     for( ; ; ) 
     {
@@ -70,7 +77,7 @@ void prvLogTask( void *prvParameters )
          * FreeRTOSConfig.h. 
          */
         //if( xQueueReceive( xLogQueue, &xLogMessage, portMAX_DELAY ) != pdPASS )
-        if( xQueueReceive( xLogQueueHandle, &xLogMessageRx, portMAX_DELAY ) != pdPASS )
+        if( xQueueReceive( xQueue, &xLogMessageRx, portMAX_DELAY ) != pdPASS )
         {
             /* Nothing was received from the queue even after blocking to wait
              * for data to arrive. */
@@ -81,11 +88,7 @@ void prvLogTask( void *prvParameters )
             uiMessageID++;
 
             /* xLogMessage now contains the received data. */
-            if ( bLogFlag )
-            {
-                printf( "UART1: %d bytes transmitted.\n", nrf_uart_tx( NRF_UARTE1_NS, xLogMessageRx.ucData, strlen( xLogMessageRx.ucData ) ) );
-            }
-
+            printf( "UART1: %d bytes transmitted.\n", nrf_uart_tx( NRF_UARTE1_NS, xLogMessageRx.ucData, strlen( xLogMessageRx.ucData ) ) );
             printf( "ID: %d, Message: %s", xLogMessageRx.uiLogMessageID, xLogMessageRx.ucData );
         } 
     }
@@ -102,13 +105,8 @@ void vLogPrint( char *pcLogMessage )
 
     strcpy( xLogMessageTx.ucData, pcLogMessage );
     xLogMessageTx.uiLogMessageID = 0;
-    if ( xQueueSend( xLogQueueHandle, &xLogMessageTx, pdMS_TO_TICKS( 100 ) ) != pdPASS )
+    if ( xQueueSend( xGetLogHandle(), &xLogMessageTx, pdMS_TO_TICKS( 100 ) ) != pdPASS )
     {
         /* Message failed to send */
     }
-}
-
-void vSetFlag( bool bFlag )
-{
-    bLogFlag = bFlag;
 }
