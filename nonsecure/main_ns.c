@@ -334,7 +334,8 @@ uint32_t * __privileged_sram_start__        = __PRIVILEGED_RAM_NS_segment_start_
 uint32_t * __privileged_sram_end__          = ( uint32_t * )( ( uint32_t )__PRIVILEGED_RAM_NS_segment_end__ - ( uint32_t ) 1 );
 /*-----------------------------------------------------------*/
 
-QueueHandle_t xQueue = NULL;
+//QueueHandle_t xQueue = NULL;
+extern QueueHandle_t xLogQueueHandle;
 
 /**
  * @brief Create all demo tasks.
@@ -430,10 +431,10 @@ static void prvCreateTasks( void )
         }
     };
 
-    xQueue = xQueueCreate( 5, 32 * sizeof( uint8_t ) );
+    xLogQueueHandle = xQueueCreate( 5, 32 * sizeof( uint8_t ) );
 
-    xReaderTaskParameters.pvParameters = ( void * )xQueue;
-    xWriterTaskParameters.pvParameters = ( void * )xQueue;
+    xReaderTaskParameters.pvParameters = ( void * )xLogQueueHandle;
+    xWriterTaskParameters.pvParameters = ( void * )xLogQueueHandle;
 
     xTaskCreateRestricted( &( xReaderTaskParameters ), NULL );
     //xTaskCreateRestricted( &( xWriterTaskParameters ), NULL );

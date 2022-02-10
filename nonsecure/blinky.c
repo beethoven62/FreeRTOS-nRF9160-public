@@ -21,7 +21,7 @@
 static void *pvParameters;
 static void prvBlinkyTask( void * pvParameters );
 
-extern xQueue;
+extern QueueHandle_t xLogQueueHandle;
 
 void vStartBlinkyDemo( void )
 {
@@ -50,7 +50,7 @@ void vStartBlinkyDemo( void )
             { 0, 0, 0 },
         }
     };
-    xBlinkyTaskParameters.pvParameters = ( void* )xQueue; // xGetLogHandle();
+    xBlinkyTaskParameters.pvParameters = ( void* )xLogQueueHandle; // xGetLogHandle();
 
     /* Create an unprivileged task. */
 #if configENABLE_MPU == 1
