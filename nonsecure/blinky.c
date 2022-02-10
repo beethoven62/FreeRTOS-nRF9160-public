@@ -21,8 +21,6 @@
 static void *pvParameters;
 static void prvBlinkyTask( void * pvParameters );
 
-//extern QueueHandle_t xLogQueueHandle;
-
 void vStartBlinkyDemo( void )
 {
     uint16_t i;
@@ -37,33 +35,23 @@ void vStartBlinkyDemo( void )
         .puxStackBuffer = xBlinkyTaskStack,
         .xRegions       =
         {
-            { 0, 0, 0 },
-            { 0, 0, 0 },
-            { 0, 0, 0 },
-            { 0, 0, 0 },
-            { 0, 0, 0 },
-            { 0, 0, 0 },
-            { 0, 0, 0 },
-            { 0, 0, 0 },
-            { 0, 0, 0 },
-            { 0, 0, 0 },
-            { 0, 0, 0 },
+            { ( void *)NRF_P0_NS, sizeof( NRF_GPIO_Type ), tskMPU_REGION_READ_WRITE | tskMPU_REGION_EXECUTE_NEVER },
+            { 0,                  0,                       0                                                      },
+            { 0,                  0,                       0                                                      },
+            { 0,                  0,                       0                                                      },
+            { 0,                  0,                       0                                                      },
+            { 0,                  0,                       0                                                      },
+            { 0,                  0,                       0                                                      },
+            { 0,                  0,                       0                                                      },
+            { 0,                  0,                       0                                                      },
+            { 0,                  0,                       0                                                      },
+            { 0,                  0,                       0                                                      },
         }
     };
     xBlinkyTaskParameters.pvParameters = ( void* )xGetLogHandle();
 
     /* Create an unprivileged task. */
-#if configENABLE_MPU == 1
     xTaskCreateRestricted(  &( xBlinkyTaskParameters ), NULL );
-#else
-    xTaskCreate( xBlinkyTaskParameters.pvTaskCode, 
-                 xBlinkyTaskParameters.pcName, 
-                 xBlinkyTaskParameters.usStackDepth, 
-                 xBlinkyTaskParameters.pvParameters, 
-                 xBlinkyTaskParameters.uxPriority, 
-                 NULL );
-#endif
-
 }
 
 /*-----------------------------------------------------------*/
@@ -75,16 +63,14 @@ static void prvBlinkyTask( void * pvParameters )
     char ucBuf[ LOG_MSG_MAX ];
     QueueHandle_t xQueue = ( QueueHandle_t )pvParameters;
 
-    //vLogPrint( "Blinky\r\n" );
-    xQueueSend( xQueue, "Blinky\r\n", 0 );
+    vLogPrint( xQueue, "Blinky\r\n" );
 
     /* Start LEDs */
     for ( i = 0; ; i = ( i + 1 ) % 4 )
     {
         /* This task will blink the LEDs */
         sprintf( ucBuf, "LED #%d\r\n", i );
-        xQueueSend( xQueue, ucBuf, 0 );
-        //vLogPrint( ucBuf );
+        vLogPrint( xQueue, ucBuf );
         nrf_gpio_out_toggle( i + 2 );
         vTaskDelay( pdMS_TO_TICKS( 1000 ) );
         nrf_gpio_out_toggle( i + 2 );

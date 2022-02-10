@@ -114,7 +114,7 @@ static void prvROAccessTask( void * pvParameters )
         ( void ) ucVal;
         ucROTaskFaultTracker[ 0 ] = 1;
         ucSharedMemory[ 0 ] = 0;
-        configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+        //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
 
         #if ( configTOTAL_MPU_REGIONS == 16 )
         {
@@ -124,7 +124,7 @@ static void prvROAccessTask( void * pvParameters )
             ( void ) ucVal;
             ucROTaskFaultTracker[ 0 ] = 1;
             ucSharedMemory1[ 0 ] = 0;
-            configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+            //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
 
             /* Perform the above mentioned sequence on ucSharedMemory2. */
             ucVal = ucSharedMemory2[ 0 ];
@@ -132,7 +132,7 @@ static void prvROAccessTask( void * pvParameters )
             ( void ) ucVal;
             ucROTaskFaultTracker[ 0 ] = 1;
             ucSharedMemory2[ 0 ] = 0;
-            configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+            //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
 
             /* Perform the above mentioned sequence on ucSharedMemory3. */
             ucVal = ucSharedMemory3[ 0 ];
@@ -140,7 +140,7 @@ static void prvROAccessTask( void * pvParameters )
             ( void ) ucVal;
             ucROTaskFaultTracker[ 0 ] = 1;
             ucSharedMemory3[ 0 ] = 0;
-            configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+            //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
 
             /* Perform the above mentioned sequence on ucSharedMemory4. */
             ucVal = ucSharedMemory4[ 0 ];
@@ -148,7 +148,7 @@ static void prvROAccessTask( void * pvParameters )
             ( void ) ucVal;
             ucROTaskFaultTracker[ 0 ] = 1;
             ucSharedMemory4[ 0 ] = 0;
-            configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+            //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
 
             /* Perform the above mentioned sequence on ucSharedMemory5. */
             ucVal = ucSharedMemory5[ 0 ];
@@ -156,7 +156,7 @@ static void prvROAccessTask( void * pvParameters )
             ( void ) ucVal;
             ucROTaskFaultTracker[ 0 ] = 1;
             ucSharedMemory5[ 0 ] = 0;
-            configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+            //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
 
             /* Perform the above mentioned sequence on ucSharedMemory6. */
             ucVal = ucSharedMemory6[ 0 ];
@@ -164,7 +164,7 @@ static void prvROAccessTask( void * pvParameters )
             ( void ) ucVal;
             ucROTaskFaultTracker[ 0 ] = 1;
             ucSharedMemory6[ 0 ] = 0;
-            configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+            //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
 
             /* Perform the above mentioned sequence on ucSharedMemory7. */
             ucVal = ucSharedMemory7[ 0 ];
@@ -172,7 +172,7 @@ static void prvROAccessTask( void * pvParameters )
             ( void ) ucVal;
             ucROTaskFaultTracker[ 0 ] = 1;
             ucSharedMemory7[ 0 ] = 0;
-            configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+            //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
 
             /* Perform the above mentioned sequence on ucSharedMemory8. */
             ucVal = ucSharedMemory8[ 0 ];
@@ -180,7 +180,7 @@ static void prvROAccessTask( void * pvParameters )
             ( void ) ucVal;
             ucROTaskFaultTracker[ 0 ] = 1;
             ucSharedMemory8[ 0 ] = 0;
-            configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+            //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
         }
         #endif /* configTOTAL_MPU_REGIONS == 16 */
 

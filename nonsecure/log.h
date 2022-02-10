@@ -20,7 +20,7 @@ typedef struct LogMessage
  * The log task is a privileged task that prints out logs 
  */
 void vStartLogTask( void );
-void vLogPrint( char * pcLogMessage );
+void vLogPrint( QueueHandle_t xQueue, char * pcLogMessage );
 QueueHandle_t xGetLogHandle( void );
 void vSetFlag( bool bFlag );
 
