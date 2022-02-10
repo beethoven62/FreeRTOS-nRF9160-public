@@ -102,7 +102,7 @@
       arm_target_interface_type="SWD"
       arm_v8M_has_cmse="Yes"
       c_preprocessor_definitions="NRF_TRUSTZONE_NONSECURE;__SUPPORT_RESET_HALT_AFTER_BTL=0;ARM_MATH_ARMV8MML;NRF9160_XXAA;__NRF_FAMILY;INITIALIZE_USER_SECTIONS;__ARMCC_VERSION"
-      c_user_include_directories="$(SolutionDir)/lib/CMSIS_5/CMSIS/Core/Include;$(SolutionDir)/lib/nRF/Include;$(SolutionDir)/lib/FreeRTOS/Source/include;$(SolutionDir)/lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure;$(SolutionDir)/lib/FreeRTOS/Source/portable/GCC/ARM_CM33/non_secure;$(SolutionDir)/Config;$(SolutionDir)/Demo/tz_demo;$(SolutionDir)/Demo/mpu_demo;$(ProjectDir)"
+      c_user_include_directories="$(SolutionDir)/lib/CMSIS_5/CMSIS/Core/Include;$(SolutionDir)/lib/nRF/Include;$(SolutionDir)/lib/nRF_Modem/include;$(SolutionDir)/lib/FreeRTOS/Source/include;$(SolutionDir)/lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure;$(SolutionDir)/lib/FreeRTOS/Source/portable/GCC/ARM_CM33/non_secure;$(SolutionDir)/Config;$(SolutionDir)/Demo/tz_demo;$(SolutionDir)/Demo/mpu_demo;$(ProjectDir)"
       debug_register_definition_file="$(SolutionDir)/lib/nRF/XML/nrf9160_Registers.xml"
       debug_stack_pointer_start="__stack_end__"
       debug_start_from_entry_point_symbol="No"
@@ -111,7 +111,7 @@
       linker_additional_files="$(SolutionDir)/secure/$(OutDir)/secure_nsc.elf"
       linker_memory_map_file="$(ProjectDir)/nRF9160_xxAA_MemoryMap.xml"
       linker_output_format="hex"
-      linker_section_placement_file="nRF9160_xxAA_section_placement.xml"      
+      linker_section_placement_file="nRF9160_xxAA_section_placement.xml"
       macros="DeviceHeaderFile=$(PackagesDir)/nRF/Device/Include/nrf.h;DeviceLibraryIdentifier=ARMv8MMLlfsp;DeviceSystemFile=$(PackagesDir)/nRF/Device/Source/system_nrf9160.c;DeviceVectorsFile=$(PackagesDir)/nRF/Source/nrf9160_Vectors.s;DeviceFamily=nRF;Target=nRF9160_xxAA"
       project_directory="nonsecure"
       project_type="Executable"
@@ -130,6 +130,7 @@
       <file file_name="log.c" />
       <file file_name="board.c" />
       <file file_name="cli.c" />
+      <file file_name="nrf_modem_os.c" />
     </folder>
     <folder Name="System Files">
       <file file_name="$(SolutionDir)/lib/nRF/Source/nRF_Startup.s" />
