@@ -53,7 +53,7 @@ void vStartLogTask( void )
 
     /* Create a privileged task. */
 #if configENABLE_MPU == 1
-    xTaskCreateRestricted(  &( xLogTaskParameters ), NULL );
+    //xTaskCreateRestricted(  &( xLogTaskParameters ), NULL );
 #else
     xTaskCreate( xLogTaskParameters.pvTaskCode, 
                  xLogTaskParameters.pcName, 

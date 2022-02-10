@@ -310,6 +310,7 @@ portDONT_DISCARD void vHandleMemoryFault( uint32_t * pulFaultStackAddress )
 /* Demo includes. */
 //#include "tz_demo.h"
 //#include "mpu_demo.h"
+#include "log.h"
 #include "blinky.h"
 
 /*-----------------------------------------------------------*/
@@ -335,7 +336,7 @@ uint32_t * __privileged_sram_end__          = ( uint32_t * )( ( uint32_t )__PRIV
 /*-----------------------------------------------------------*/
 
 //QueueHandle_t xQueue = NULL;
-extern QueueHandle_t xLogQueueHandle;
+//extern QueueHandle_t xLogQueueHandle;
 
 /**
  * @brief Create all demo tasks.
@@ -431,10 +432,10 @@ static void prvCreateTasks( void )
         }
     };
 
-    xLogQueueHandle = xQueueCreate( 5, 32 * sizeof( uint8_t ) );
+    //xLogQueueHandle = xQueueCreate( 5, 32 * sizeof( uint8_t ) );
 
-    xReaderTaskParameters.pvParameters = ( void * )xLogQueueHandle;
-    xWriterTaskParameters.pvParameters = ( void * )xLogQueueHandle;
+    xReaderTaskParameters.pvParameters = ( void * )xGetLogHandle();
+    xWriterTaskParameters.pvParameters = ( void * )xGetLogHandle();
 
     xTaskCreateRestricted( &( xReaderTaskParameters ), NULL );
     //xTaskCreateRestricted( &( xWriterTaskParameters ), NULL );
