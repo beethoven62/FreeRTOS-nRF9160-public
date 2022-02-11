@@ -51,7 +51,7 @@ void vStartLogTask( void )
             { 0, 0, 0 },
         }
     };
-    xLogTaskParameters.pvParameters = ( void * )xGetLogHandle();
+    xLogTaskParameters.pvParameters = ( void *)xGetLogHandle();
 
     /* Create a privileged task. */
     xTaskCreateRestricted(  &( xLogTaskParameters ), NULL );
@@ -60,7 +60,6 @@ void vStartLogTask( void )
 void prvLogTask( void *prvParameters )
 {
     LogMessage_t xLogMessageRx;
-    uint32_t uiMessageID = 0;
     QueueHandle_t xQueue = ( QueueHandle_t )prvParameters;
 
     bLogFlag = true;
@@ -77,15 +76,12 @@ void prvLogTask( void *prvParameters )
         } 
         else 
         {
-            /* Message received, increment message ID counter */
-            uiMessageID++;
-
             /* xLogMessage now contains the received data. */
             if ( bLogFlag )
             {
-                printf( "UART1: %d bytes transmitted.\n", nrf_uart_tx( NRF_UARTE1_NS, xLogMessageRx.ucData, strlen( xLogMessageRx.ucData ) ) );
+                printf( "UART1: %d bytes transmitted.\n", nrf_uart_tx( NRF_UARTE1_NS, xLogMessageRx.cData, strlen( xLogMessageRx.cData ) ) );
             }
-            printf( "ID: %d, Message: %s", xLogMessageRx.uiLogMessageID, xLogMessageRx.ucData );
+            printf( "Time: %d.%d%d%d s, Message: %s\n", xLogMessageRx.uiTime / 1000, ( xLogMessageRx.uiTime % 1000 ) / 100, ( xLogMessageRx.uiTime % 100 ) / 10, xLogMessageRx.uiTime % 10, xLogMessageRx.cData );
         } 
     }
 }
@@ -102,7 +98,8 @@ void vLogPrint( QueueHandle_t xQueue, char *pcLogMessage )
 {
     LogMessage_t xLogMessageTx;
 
-    strcpy( xLogMessageTx.ucData, pcLogMessage );
+    xLogMessageTx.uiTime = xTaskGetTickCount();
+    strcpy( xLogMessageTx.cData, pcLogMessage );
     if ( xQueueSend( xQueue, &xLogMessageTx, pdMS_TO_TICKS( 100 ) ) != pdPASS )
     {
         /* Message failed to send */

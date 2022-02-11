@@ -28,6 +28,9 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+/* Other includes */
+#include "log.h"
+
 /**
  * @brief Size of the shared memory region.
  */
@@ -69,7 +72,7 @@ static uint8_t ucROTaskFaultTracker[ SHARED_MEMORY_SIZE ] __attribute__( ( align
  *
  * @param pvParameters[in] Parameters as passed during task creation.
  */
-static void prvROAccessTask( void * pvParameters );
+static void prvROAccessTask( void* pvParameters );
 
 /**
  * @brief Implements the task which has Read Write access to the memory region
@@ -77,16 +80,16 @@ static void prvROAccessTask( void * pvParameters );
  *
  * @param pvParameters[in] Parameters as passed during task creation.
  */
-static void prvRWAccessTask( void * pvParameters );
+static void prvRWAccessTask( void* pvParameters );
 
 /*-----------------------------------------------------------*/
 
-static void prvROAccessTask( void * pvParameters )
+static void prvROAccessTask( void* pvParameters )
 {
     uint8_t ucVal;
+    QueueHandle_t xQueue = ( QueueHandle_t )pvParameters;
 
-    /* Unused parameters. */
-    ( void ) pvParameters;
+    vLogPrint( xQueue, "MPU RO Access Task\r\n" );
 
     for( ; ; )
     {
@@ -114,7 +117,7 @@ static void prvROAccessTask( void * pvParameters )
         ( void ) ucVal;
         ucROTaskFaultTracker[ 0 ] = 1;
         ucSharedMemory[ 0 ] = 0;
-        //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+        configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
 
         #if ( configTOTAL_MPU_REGIONS == 16 )
         {
@@ -124,7 +127,7 @@ static void prvROAccessTask( void * pvParameters )
             ( void ) ucVal;
             ucROTaskFaultTracker[ 0 ] = 1;
             ucSharedMemory1[ 0 ] = 0;
-            //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+            configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
 
             /* Perform the above mentioned sequence on ucSharedMemory2. */
             ucVal = ucSharedMemory2[ 0 ];
@@ -132,7 +135,7 @@ static void prvROAccessTask( void * pvParameters )
             ( void ) ucVal;
             ucROTaskFaultTracker[ 0 ] = 1;
             ucSharedMemory2[ 0 ] = 0;
-            //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+            configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
 
             /* Perform the above mentioned sequence on ucSharedMemory3. */
             ucVal = ucSharedMemory3[ 0 ];
@@ -140,7 +143,7 @@ static void prvROAccessTask( void * pvParameters )
             ( void ) ucVal;
             ucROTaskFaultTracker[ 0 ] = 1;
             ucSharedMemory3[ 0 ] = 0;
-            //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+            configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
 
             /* Perform the above mentioned sequence on ucSharedMemory4. */
             ucVal = ucSharedMemory4[ 0 ];
@@ -148,7 +151,7 @@ static void prvROAccessTask( void * pvParameters )
             ( void ) ucVal;
             ucROTaskFaultTracker[ 0 ] = 1;
             ucSharedMemory4[ 0 ] = 0;
-            //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+            configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
 
             /* Perform the above mentioned sequence on ucSharedMemory5. */
             ucVal = ucSharedMemory5[ 0 ];
@@ -156,7 +159,7 @@ static void prvROAccessTask( void * pvParameters )
             ( void ) ucVal;
             ucROTaskFaultTracker[ 0 ] = 1;
             ucSharedMemory5[ 0 ] = 0;
-            //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+            configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
 
             /* Perform the above mentioned sequence on ucSharedMemory6. */
             ucVal = ucSharedMemory6[ 0 ];
@@ -164,7 +167,7 @@ static void prvROAccessTask( void * pvParameters )
             ( void ) ucVal;
             ucROTaskFaultTracker[ 0 ] = 1;
             ucSharedMemory6[ 0 ] = 0;
-            //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+            configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
 
             /* Perform the above mentioned sequence on ucSharedMemory7. */
             ucVal = ucSharedMemory7[ 0 ];
@@ -172,7 +175,7 @@ static void prvROAccessTask( void * pvParameters )
             ( void ) ucVal;
             ucROTaskFaultTracker[ 0 ] = 1;
             ucSharedMemory7[ 0 ] = 0;
-            //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+            configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
 
             /* Perform the above mentioned sequence on ucSharedMemory8. */
             ucVal = ucSharedMemory8[ 0 ];
@@ -180,9 +183,10 @@ static void prvROAccessTask( void * pvParameters )
             ( void ) ucVal;
             ucROTaskFaultTracker[ 0 ] = 1;
             ucSharedMemory8[ 0 ] = 0;
-            //configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
+            configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
         }
         #endif /* configTOTAL_MPU_REGIONS == 16 */
+        vLogPrint( xQueue, "MPU RO access task writing.\r\n" );
 
         /* Wait for a second. */
         vTaskDelay( pdMS_TO_TICKS( 1000 ) );
@@ -190,10 +194,11 @@ static void prvROAccessTask( void * pvParameters )
 }
 /*-----------------------------------------------------------*/
 
-static void prvRWAccessTask( void * pvParameters )
+static void prvRWAccessTask( void* pvParameters )
 {
-    /* Unused parameters. */
-    ( void ) pvParameters;
+    QueueHandle_t xQueue = ( QueueHandle_t )pvParameters;
+
+    vLogPrint( xQueue, "MPU RW Access Task\r\n" );
 
     for( ; ; )
     {
@@ -213,6 +218,7 @@ static void prvRWAccessTask( void * pvParameters )
             ucSharedMemory8[ 0 ] = 0;
         }
         #endif /* configTOTAL_MPU_REGIONS == 16 */
+        vLogPrint( xQueue, "MPU RW access task writing.\r\n" );
 
         /* Wait for a second. */
         vTaskDelay( pdMS_TO_TICKS( 1000 ) );
@@ -249,6 +255,7 @@ void vStartMPUDemo( void )
             { 0,                    0,  0                                                      },
         }
     };
+    xROAccessTaskParameters.pvParameters = ( void* )xGetLogHandle();
     TaskParameters_t xRWAccessTaskParameters =
     {
         .pvTaskCode     = prvRWAccessTask,
@@ -274,6 +281,7 @@ void vStartMPUDemo( void )
             { 0,               0,  0                                                      },
         }
     };
+    xRWAccessTaskParameters.pvParameters = ( void* )xGetLogHandle();
 
     /* Create an unprivileged task with RO access to ucSharedMemory. */
     xTaskCreateRestricted( &( xROAccessTaskParameters ), NULL );
@@ -282,7 +290,7 @@ void vStartMPUDemo( void )
     xTaskCreateRestricted( &( xRWAccessTaskParameters ), NULL );
 }
 /*-----------------------------------------------------------*/
-#if 0
+#if 1
 portDONT_DISCARD void vHandleMemoryFault( uint32_t * pulFaultStackAddress )
 {
     uint32_t ulPC;

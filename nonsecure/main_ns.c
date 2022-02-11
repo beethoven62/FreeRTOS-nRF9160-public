@@ -216,7 +216,7 @@ void MemManage_Handler( void )
 }
 /*-----------------------------------------------------------*/
 
-#if 1
+#if 0
 portDONT_DISCARD void vHandleMemoryFault( uint32_t * pulFaultStackAddress )
 {
     uint32_t ulPC;
