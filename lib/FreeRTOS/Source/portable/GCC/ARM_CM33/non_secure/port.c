@@ -1,6 +1,8 @@
 /*
- * FreeRTOS Kernel V10.4.3
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel <DEVELOPMENT BRANCH>
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -182,8 +184,7 @@
 #define portMPU_ENABLE_BIT                    ( 1UL << 0UL )
 
 /* Expected value of the portMPU_TYPE register. */
-#define portEXPECTED_MPU_TYPE_VALUE8           ( 8UL << 8UL ) /* 8 regions, unified. */
-#define portEXPECTED_MPU_TYPE_VALUE16         ( 16UL << 8UL ) /* 16 regions, unified. */
+#define portEXPECTED_MPU_TYPE_VALUE           ( configTOTAL_MPU_REGIONS << 8UL )
 /*-----------------------------------------------------------*/
 
 /**
@@ -345,8 +346,6 @@ void SysTick_Handler( void ) PRIVILEGED_FUNCTION;
  */
 portDONT_DISCARD void vPortSVCHandler_C( uint32_t * pulCallerStackAddress ) PRIVILEGED_FUNCTION;
 /*-----------------------------------------------------------*/
-
-extern uint32_t __PRIVILEGED_FLASH_segment_start__[];
 
 /**
  * @brief Each task maintains its own interrupt status in the critical nesting
@@ -626,8 +625,14 @@ static void prvTaskExitError( void )
             extern uint32_t __privileged_sram_end__[];
         #endif /* defined( __ARMCC_VERSION ) */
 
+        /* The only permitted number of regions are 8 or 16. */
+        configASSERT( ( configTOTAL_MPU_REGIONS == 8 ) || ( configTOTAL_MPU_REGIONS == 16 ) );
+
+        /* Ensure that the configTOTAL_MPU_REGIONS is configured correctly. */
+        configASSERT( portMPU_TYPE_REG == portEXPECTED_MPU_TYPE_VALUE );
+
         /* Check that the MPU is present. */
-        if( portMPU_TYPE_REG == portEXPECTED_MPU_TYPE_VALUE8 || portMPU_TYPE_REG == portEXPECTED_MPU_TYPE_VALUE16 )
+        if( portMPU_TYPE_REG == portEXPECTED_MPU_TYPE_VALUE )
         {
             /* MAIR0 - Index 0. */
             portMPU_MAIR0_REG |= ( ( portMPU_NORMAL_MEMORY_BUFFERABLE_CACHEABLE << portMPU_MAIR_ATTR0_POS ) & portMPU_MAIR_ATTR0_MASK );
@@ -647,10 +652,10 @@ static void prvTaskExitError( void )
             /* Setup unprivileged flash as Read Only by both privileged and
              * unprivileged tasks. All tasks can read it but no-one can modify. */
             portMPU_RNR_REG = portUNPRIVILEGED_FLASH_REGION;
-            portMPU_RBAR_REG = ( ( ( uint32_t ) ( __unprivileged_flash_start__ ) ) & portMPU_RBAR_ADDRESS_MASK ) |
+            portMPU_RBAR_REG = ( ( ( uint32_t ) __unprivileged_flash_start__ ) & portMPU_RBAR_ADDRESS_MASK ) |
                                ( portMPU_REGION_NON_SHAREABLE ) |
                                ( portMPU_REGION_READ_ONLY );
-            portMPU_RLAR_REG = ( ( ( uint32_t ) ( __unprivileged_flash_end__ ) ) & portMPU_RLAR_ADDRESS_MASK ) |
+            portMPU_RLAR_REG = ( ( ( uint32_t ) __unprivileged_flash_end__ ) & portMPU_RLAR_ADDRESS_MASK ) |
                                ( portMPU_RLAR_ATTR_INDEX0 ) |
                                ( portMPU_RLAR_REGION_ENABLE );
 
@@ -666,11 +671,11 @@ static void prvTaskExitError( void )
 
             /* Setup RAM containing kernel data for privileged access only. */
             portMPU_RNR_REG = portPRIVILEGED_RAM_REGION;
-            portMPU_RBAR_REG = ( ( ( uint32_t ) ( __privileged_sram_start__ ) ) & portMPU_RBAR_ADDRESS_MASK ) |
+            portMPU_RBAR_REG = ( ( ( uint32_t ) __privileged_sram_start__ ) & portMPU_RBAR_ADDRESS_MASK ) |
                                ( portMPU_REGION_NON_SHAREABLE ) |
                                ( portMPU_REGION_PRIVILEGED_READ_WRITE ) |
                                ( portMPU_REGION_EXECUTE_NEVER );
-            portMPU_RLAR_REG = ( ( ( uint32_t ) ( __privileged_sram_end__ ) ) & portMPU_RLAR_ADDRESS_MASK ) |
+            portMPU_RLAR_REG = ( ( ( uint32_t ) __privileged_sram_end__ ) & portMPU_RLAR_ADDRESS_MASK ) |
                                ( portMPU_RLAR_ATTR_INDEX0 ) |
                                ( portMPU_RLAR_REGION_ENABLE );
 
@@ -782,7 +787,8 @@ void vPortSVCHandler_C( uint32_t * pulCallerStackAddress ) /* PRIVILEGED_FUNCTIO
     uint32_t ulPC;
 
     #if ( configENABLE_TRUSTZONE == 1 )
-        uint32_t ulR0;
+        uint32_t ulR0, ulR1;
+        extern TaskHandle_t pxCurrentTCB;
         #if ( configENABLE_MPU == 1 )
             uint32_t ulControl, ulIsTaskPrivileged;
         #endif /* configENABLE_MPU */
@@ -813,25 +819,27 @@ void vPortSVCHandler_C( uint32_t * pulCallerStackAddress ) /* PRIVILEGED_FUNCTIO
                         ulIsTaskPrivileged = ( ( ulControl & portCONTROL_PRIVILEGED_MASK ) == 0 );
 
                         /* Allocate and load a context for the secure task. */
-                        xSecureContext = SecureContext_AllocateContext( ulR0, ulIsTaskPrivileged );
+                        xSecureContext = SecureContext_AllocateContext( ulR0, ulIsTaskPrivileged, pxCurrentTCB );
                     }
                 #else /* if ( configENABLE_MPU == 1 ) */
                     {
                         /* Allocate and load a context for the secure task. */
-                        xSecureContext = SecureContext_AllocateContext( ulR0 );
+                        xSecureContext = SecureContext_AllocateContext( ulR0, pxCurrentTCB );
                     }
                 #endif /* configENABLE_MPU */
 
-                configASSERT( xSecureContext != NULL );
-                SecureContext_LoadContext( xSecureContext );
+                configASSERT( xSecureContext != securecontextINVALID_CONTEXT_ID );
+                SecureContext_LoadContext( xSecureContext, pxCurrentTCB );
                 break;
 
             case portSVC_FREE_SECURE_CONTEXT:
-                /* R0 contains the secure context handle to be freed. */
+                /* R0 contains TCB being freed and R1 contains the secure
+                 * context handle to be freed. */
                 ulR0 = pulCallerStackAddress[ 0 ];
+                ulR1 = pulCallerStackAddress[ 1 ];
 
                 /* Free the secure context. */
-                SecureContext_FreeContext( ( SecureContextHandle_t ) ulR0 );
+                SecureContext_FreeContext( ( SecureContextHandle_t ) ulR1, ( void * ) ulR0 );
                 break;
         #endif /* configENABLE_TRUSTZONE */
 
@@ -1154,7 +1162,7 @@ void vPortEndScheduler( void ) /* PRIVILEGED_FUNCTION */
                 }
                 else
                 {
-                    /* Attr1 in MAIR0 is configured as normal memory. */
+                    /* Attr0 in MAIR0 is configured as normal memory. */
                     xMPUSettings->xRegionsSettings[ ulRegionNumber ].ulRLAR |= portMPU_RLAR_ATTR_INDEX0;
                 }
             }

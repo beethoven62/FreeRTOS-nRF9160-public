@@ -141,14 +141,13 @@ uint32_t nrf_uart_rx( NRF_UARTE_Type* uart, void* rxbuf, uint32_t rxlen )
 
     if ( rxbuf != NULL && rxlen > 0 )
     {
+        *( uint8_t* )rxbuf = 0;
         uart->RXD.PTR = ( uint32_t ) rxbuf;
         uart->RXD.MAXCNT = rxlen;
         uart->TASKS_STARTRX = UARTE_TASKS_STARTRX_TASKS_STARTRX_Trigger;
-
-        while( uart->EVENTS_ENDRX == UARTE_EVENTS_ENDRX_EVENTS_ENDRX_NotGenerated  )
-        {
-            taskYIELD();
-        }
+ 
+        /* Check for UARTE_EVENT_ENDRX does not work. Using first byte in receive buffer to signal rx. */
+        while( *( uint8_t* )rxbuf == 0 );
         nbytes = uart->RXD.AMOUNT;
     }
 

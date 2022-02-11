@@ -30,55 +30,51 @@ void vStartCLITask( void )
         .pcName         = "CLITask",
         .usStackDepth   = configMINIMAL_STACK_SIZE,
         .pvParameters   = NULL,
-        .uxPriority     = tskIDLE_PRIORITY,
+        .uxPriority     = tskIDLE_PRIORITY | portPRIVILEGE_BIT,
         .puxStackBuffer = xCLITaskStack,
         .xRegions       =
         {
-            { 0,    0,    0 },
-            { 0,    0,    0 },
-            { 0,    0,    0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
         }
     };
+    xCLITaskParameters.pvParameters = ( void* )xGetLogHandle();
 
     /* Create a privileged task. */
-#if configENABLE_MPU == 1
     xTaskCreateRestricted(  &( xCLITaskParameters ), NULL );
-#else
-    xTaskCreate( xCLITaskParameters.pvTaskCode, 
-                 xCLITaskParameters.pcName, 
-                 xCLITaskParameters.usStackDepth, 
-                 xCLITaskParameters.pvParameters, 
-                 xCLITaskParameters.uxPriority, 
-                 NULL );
-#endif
 }
 
-void prvCLITask( void *prvParameters )
+void prvCLITask( void *pvParameters )
 {
     uint32_t nbytes;
-    char cBuf[ LOG_MSG_MAX ];
+    char cByte, cBuf[ LOG_MSG_MAX ];
+    QueueHandle_t xQueue = ( QueueHandle_t )pvParameters;
 
-    vLogPrint( "CLI Task\r\n" );
+    vLogPrint( xQueue, "CLI task started" );
 
     for( ; ; ) 
     {
-        if ( ( nbytes = nrf_uart_rx( NRF_UARTE1_NS, cBuf, 1 ) ) > 0 )
+        if ( ( nbytes = nrf_uart_rx( NRF_UARTE1_NS, &cByte, 1 ) ) > 0 )
         {
-            nbytes = nbytes < LOG_MSG_MAX ? nbytes : LOG_MSG_MAX - 1;
-            cBuf[ nbytes ] = 0;
-            if ( strlen( cBuf ) > 0 )
+            sprintf( cBuf, "Received: %s", &cByte );
+            vLogPrint( xQueue, cBuf );
+            if ( cByte == 'x' || cByte == 'X' )
             {
-                printf( "Received: %s\n", cBuf );
-                if ( cBuf[ 0 ] == 'x' || cBuf[ 0 ] == 'X' )
-                {
-                    vSetFlag( false );
-                }
-                else
-                {
-                    vSetFlag( true );
-                }
+                vSetFlag( false );
             }
-            cBuf[ 0 ] = 0;
+            else
+            {
+                vSetFlag( true );
+            }
         }
     }
 }

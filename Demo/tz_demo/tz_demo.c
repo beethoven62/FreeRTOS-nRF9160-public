@@ -84,23 +84,23 @@ void vStartTZDemo( void )
         .puxStackBuffer = xSecureCallingTaskStack,
         .xRegions       =
         {
-            { ulNonSecureCounter, 32, portMPU_REGION_READ_WRITE | portMPU_REGION_EXECUTE_NEVER },
-            { 0,                  0,  0                                                      },
-            { 0,                  0,  0                                                      },
+            { ulNonSecureCounter, 32, tskMPU_REGION_READ_WRITE | tskMPU_REGION_EXECUTE_NEVER   },
+            { 0,                  0,  0                                                        },
+            { 0,                  0,  0                                                        },
+            { 0,                  0,  0                                                        },
+            { 0,                  0,  0                                                        },
+            { 0,                  0,  0                                                        },
+            { 0,                  0,  0                                                        },
+            { 0,                  0,  0                                                        },
+            { 0,                  0,  0                                                        },
+            { 0,                  0,  0                                                        },
+            { 0,                  0,  0                                                        },
         }
     };
+    xSecureCallingTaskParameters.pvParameters = ( void* )xGetLogHandle();
 
     /* Create an unprivileged task which calls secure functions. */
-#if configENABLE_MPU == 1
     xTaskCreateRestricted( &( xSecureCallingTaskParameters ), NULL );
-#else
-    xTaskCreate( xSecureCallingTaskParameters.pvTaskCode, 
-                 xSecureCallingTaskParameters.pcName, 
-                 xSecureCallingTaskParameters.usStackDepth, 
-                 xSecureCallingTaskParameters.pvParameters, 
-                 xSecureCallingTaskParameters.uxPriority, 
-                 NULL );
-#endif
 }
 /*-----------------------------------------------------------*/
 
@@ -118,8 +118,9 @@ static void prvSecureCallingTask( void * pvParameters )
     uint32_t ulLastSecureCounter = 0, ulLastNonSecureCounter = 0;
     uint32_t ulCurrentSecureCounter = 0;
     char ucBuf[ LOG_MSG_MAX ];
+    QueueHandle_t xQueue = ( QueueHandle_t )pvParameters;
 
-    vLogPrint( "TrustZone\r\n" );
+    vLogPrint( xQueue, "TrustZone task started" );
 
     /* This task calls secure side functions. So allocate a secure context for
      * it. */
@@ -145,8 +146,8 @@ static void prvSecureCallingTask( void * pvParameters )
         ulLastSecureCounter = ulCurrentSecureCounter;
         ulLastNonSecureCounter = ulNonSecureCounter[ 0 ];
 
-        sprintf( ucBuf, "Secure count: %d\r\n", ulCurrentSecureCounter );
-        vLogPrint( ucBuf );
+        sprintf( ucBuf, "Secure count: %d", ulCurrentSecureCounter );
+        vLogPrint( xQueue, ucBuf );
 
         /* Wait for a second. */
         vTaskDelay( pdMS_TO_TICKS( 1000 ) );

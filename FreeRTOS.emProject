@@ -108,7 +108,7 @@
       debug_start_from_entry_point_symbol="No"
       debug_target_connection="J-Link"
       gcc_entry_point="Reset_Handler"
-      linker_additional_files="$(SolutionDir)/secure/$(OutDir)/secure_nsc.elf"
+      linker_additional_files="$(SolutionDir)/secure/$(OutDir)/secure_nsc.elf;$(SolutionDir)/lib/nRF_Modem/lib/cortex-m33/hard-float/libmodem.a"
       linker_memory_map_file="$(ProjectDir)/nRF9160_xxAA_MemoryMap.xml"
       linker_output_format="hex"
       linker_section_placement_file="nRF9160_xxAA_section_placement.xml"

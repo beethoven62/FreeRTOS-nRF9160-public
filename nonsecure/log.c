@@ -16,10 +16,12 @@
 #include "board.h"
 #include "log.h"
 
+#define pdTICKS_TO_MS( xTimeInTicks )    ( ( ( TickType_t ) xTimeInTicks * ( TickType_t ) 1000U ) / ( TickType_t ) configTICK_RATE_HZ )
+
 QueueHandle_t xLogQueueHandle = NULL;
+static bool bLogFlag;
 static StaticQueue_t xLogQueue;
 static void prvLogTask( void *prvParameters );
-static uint8_t bLogFlag;
 
 void vStartLogTask( void )
 {
@@ -34,75 +36,77 @@ void vStartLogTask( void )
         .pcName         = "LogTask",
         .usStackDepth   = configMINIMAL_STACK_SIZE,
         .pvParameters   = NULL,
-        .uxPriority     = tskIDLE_PRIORITY | portPRIVILEGE_BIT,
+        .uxPriority     = ( tskIDLE_PRIORITY + 1 ) | portPRIVILEGE_BIT,
         .puxStackBuffer = xLogTaskStack,
         .xRegions       =
         {
-            { ( void *)xLogQueueHandle, sizeof( xLogQueueHandle ), portMPU_REGION_READ_WRITE | portMPU_REGION_EXECUTE_NEVER },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
+            { 0, 0, 0 },
             { 0, 0, 0 },
             { 0, 0, 0 },
         }
     };
+    xLogTaskParameters.pvParameters = ( void *)xGetLogHandle();
 
     /* Create a privileged task. */
-#if configENABLE_MPU == 1
     xTaskCreateRestricted(  &( xLogTaskParameters ), NULL );
-#else
-    xTaskCreate( xLogTaskParameters.pvTaskCode, 
-                 xLogTaskParameters.pcName, 
-                 xLogTaskParameters.usStackDepth, 
-                 xLogTaskParameters.pvParameters, 
-                 xLogTaskParameters.uxPriority, 
-                 NULL );
-#endif
 }
 
 void prvLogTask( void *prvParameters )
 {
     LogMessage_t xLogMessageRx;
-    uint32_t uiMessageID = 0;
-    bLogFlag = true;
+    QueueHandle_t xQueue = ( QueueHandle_t )prvParameters;
+    char cBuf[ 256 ];
+    uint32_t uiMTime;
 
+    bLogFlag = true;
     for( ; ; ) 
     {
         /* Wait for the maximum period for data to become available on the queue. 
          * The period will be indefinite if INCLUDE_vTaskSuspend is set to 1 in 
          * FreeRTOSConfig.h. 
          */
-        //if( xQueueReceive( xLogQueue, &xLogMessage, portMAX_DELAY ) != pdPASS )
-        if( xQueueReceive( xLogQueueHandle, &xLogMessageRx, portMAX_DELAY ) != pdPASS )
+        if( xQueueReceive( xQueue, &xLogMessageRx, portMAX_DELAY ) != pdPASS )
         {
             /* Nothing was received from the queue even after blocking to wait
              * for data to arrive. */
         } 
         else 
         {
-            /* Message received, increment message ID counter */
-            uiMessageID++;
-
             /* xLogMessage now contains the received data. */
             if ( bLogFlag )
             {
-                printf( "UART1: %d bytes transmitted.\n", nrf_uart_tx( NRF_UARTE1_NS, xLogMessageRx.ucData, strlen( xLogMessageRx.ucData ) ) );
+                uiMTime = pdTICKS_TO_MS( xLogMessageRx.uiTicks );
+                sprintf( cBuf, "Time:\t\t%d.%d%d%d s, Message:\t%s\r\n", uiMTime / 1000, ( uiMTime % 1000 ) / 100, ( uiMTime % 100 ) / 10, uiMTime % 10, xLogMessageRx.cData );
+                nrf_uart_tx( NRF_UARTE1_NS, cBuf, strlen( cBuf ) );
             }
-
-            printf( "ID: %d, Message: %s", xLogMessageRx.uiLogMessageID, xLogMessageRx.ucData );
+            printf( "%s", cBuf );
         } 
     }
 }
 
+/**
+ * @brief Return log queue handle. Warning: for use in setup only.
+ */
 QueueHandle_t xGetLogHandle( void )
 {
     return xLogQueueHandle;
 }
 
-void vLogPrint( char *pcLogMessage )
+void vLogPrint( QueueHandle_t xQueue, char *pcLogMessage )
 {
     LogMessage_t xLogMessageTx;
 
-    strcpy( xLogMessageTx.ucData, pcLogMessage );
-    xLogMessageTx.uiLogMessageID = 0;
-    if ( xQueueSend( xLogQueueHandle, &xLogMessageTx, pdMS_TO_TICKS( 100 ) ) != pdPASS )
+    xLogMessageTx.uiTicks = xTaskGetTickCount();
+    strcpy( xLogMessageTx.cData, pcLogMessage );
+    if ( xQueueSend( xQueue, &xLogMessageTx, pdMS_TO_TICKS( 100 ) ) != pdPASS )
     {
         /* Message failed to send */
     }

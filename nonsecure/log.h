@@ -10,8 +10,8 @@
 /* Define the stucture of the log message that will be queued */
 typedef struct LogMessage
 {
-    uint32_t uiLogMessageID;
-    char ucData[ LOG_MSG_MAX ];
+    uint32_t uiTicks;
+    char cData[ LOG_MSG_MAX ];
 } LogMessage_t;
 
 /**
@@ -20,7 +20,7 @@ typedef struct LogMessage
  * The log task is a privileged task that prints out logs 
  */
 void vStartLogTask( void );
-void vLogPrint( char * pcLogMessage );
+void vLogPrint( QueueHandle_t xQueue, char * pcLogMessage );
 QueueHandle_t xGetLogHandle( void );
 void vSetFlag( bool bFlag );
 

@@ -38,9 +38,7 @@
 /* Task includes. */
 #include "log.h"
 #include "tz_demo.h"
-#if configENABLE_MPU == 1
-    #include "mpu_demo.h"
-#endif /* configENABLE_MPU == 1 */
+#include "mpu_demo.h"
 #include "blinky.h"
 #include "cli.h"
 /*-----------------------------------------------------------*/
@@ -118,10 +116,9 @@ static void prvCreateTasks( void )
 
     /* Create tasks for the TZ Demo. */
     vStartTZDemo();
-#if configENABLE_MPU == 1
+
     /* Create tasks for the MPU Demo. */
     vStartMPUDemo();
-#endif /* configENABLE_MPU == 1 */
 
     /* Create task for the Blinky Demo. */
     vStartBlinkyDemo();
@@ -219,6 +216,7 @@ void MemManage_Handler( void )
 }
 /*-----------------------------------------------------------*/
 
+#if 0
 portDONT_DISCARD void vHandleMemoryFault( uint32_t * pulFaultStackAddress )
 {
     uint32_t ulPC;
@@ -267,3 +265,4 @@ portDONT_DISCARD void vHandleMemoryFault( uint32_t * pulFaultStackAddress )
     pulFaultStackAddress[ 6 ] = ulPC;
 }
 /*-----------------------------------------------------------*/
+#endif

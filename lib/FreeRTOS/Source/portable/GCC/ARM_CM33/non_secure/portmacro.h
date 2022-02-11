@@ -1,6 +1,8 @@
 /*
- * FreeRTOS Kernel V10.4.3
- * Copyright (C) 2020 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ * FreeRTOS Kernel <DEVELOPMENT BRANCH>
+ * Copyright (C) 2021 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * SPDX-License-Identifier: MIT
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
@@ -22,7 +24,6 @@
  * https://www.FreeRTOS.org
  * https://github.com/FreeRTOS
  *
- * 1 tab == 4 spaces!
  */
 
 #ifndef PORTMACRO_H
@@ -134,6 +135,11 @@
         #define portPRIVILEGE_BIT         ( 0x0UL )
     #endif /* configENABLE_MPU */
 
+/* MPU settings that can be overriden in FreeRTOSConfig.h. */
+#ifndef configTOTAL_MPU_REGIONS
+    /* Define to 8 for backward compatibility. */
+    #define configTOTAL_MPU_REGIONS       ( 8UL )
+#endif
 
 /* MPU regions. */
     #define portPRIVILEGED_FLASH_REGION                   ( 0UL )
@@ -142,7 +148,7 @@
     #define portPRIVILEGED_RAM_REGION                     ( 3UL )
     #define portSTACK_REGION                              ( 4UL )
     #define portFIRST_CONFIGURABLE_REGION                 ( 5UL )
-    #define portLAST_CONFIGURABLE_REGION                  ( 7UL )
+    #define portLAST_CONFIGURABLE_REGION                  ( configTOTAL_MPU_REGIONS - 1UL )
     #define portNUM_CONFIGURABLE_REGIONS                  ( ( portLAST_CONFIGURABLE_REGION - portFIRST_CONFIGURABLE_REGION ) + 1 )
     #define portTOTAL_NUM_REGIONS                         ( portNUM_CONFIGURABLE_REGIONS + 1 )   /* Plus one to make space for the stack region. */
 
@@ -212,7 +218,7 @@
     #define portYIELD()                                 vPortYield()
     #define portNVIC_INT_CTRL_REG     ( *( ( volatile uint32_t * ) 0xe000ed04 ) )
     #define portNVIC_PENDSVSET_BIT    ( 1UL << 28UL )
-    #define portEND_SWITCHING_ISR( xSwitchRequired )    if( xSwitchRequired ) portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT
+    #define portEND_SWITCHING_ISR( xSwitchRequired )    do { if( xSwitchRequired ) portNVIC_INT_CTRL_REG = portNVIC_PENDSVSET_BIT; } while( 0 )
     #define portYIELD_FROM_ISR( x )                     portEND_SWITCHING_ISR( x )
 /*-----------------------------------------------------------*/
 
@@ -263,9 +269,6 @@
  * @param[in] pxTCB The TCB of the task being deleted.
  */
         #define portCLEAN_UP_TCB( pxTCB )                           vPortFreeSecureContext( ( uint32_t * ) pxTCB )
-    #else
-        #define portALLOCATE_SECURE_CONTEXT( ulSecureStackSize )
-        #define portCLEAN_UP_TCB( pxTCB )
     #endif /* configENABLE_TRUSTZONE */
 /*-----------------------------------------------------------*/
 
