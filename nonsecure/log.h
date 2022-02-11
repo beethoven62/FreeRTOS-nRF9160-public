@@ -10,7 +10,7 @@
 /* Define the stucture of the log message that will be queued */
 typedef struct LogMessage
 {
-    uint32_t uiTime;
+    uint32_t uiTicks;
     char cData[ LOG_MSG_MAX ];
 } LogMessage_t;
 

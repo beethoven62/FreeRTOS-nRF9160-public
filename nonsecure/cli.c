@@ -59,13 +59,13 @@ void prvCLITask( void *pvParameters )
     char cByte, cBuf[ LOG_MSG_MAX ];
     QueueHandle_t xQueue = ( QueueHandle_t )pvParameters;
 
-    vLogPrint( xQueue, "CLI Task\r\n" );
+    vLogPrint( xQueue, "CLI task started" );
 
     for( ; ; ) 
     {
         if ( ( nbytes = nrf_uart_rx( NRF_UARTE1_NS, &cByte, 1 ) ) > 0 )
         {
-            sprintf( cBuf, "Received: %s\r\n", &cByte );
+            sprintf( cBuf, "Received: %s", &cByte );
             vLogPrint( xQueue, cBuf );
             if ( cByte == 'x' || cByte == 'X' )
             {

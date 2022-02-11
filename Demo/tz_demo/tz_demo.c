@@ -120,7 +120,7 @@ static void prvSecureCallingTask( void * pvParameters )
     char ucBuf[ LOG_MSG_MAX ];
     QueueHandle_t xQueue = ( QueueHandle_t )pvParameters;
 
-    vLogPrint( xQueue, "TrustZone\r\n" );
+    vLogPrint( xQueue, "TrustZone task started" );
 
     /* This task calls secure side functions. So allocate a secure context for
      * it. */
@@ -146,7 +146,7 @@ static void prvSecureCallingTask( void * pvParameters )
         ulLastSecureCounter = ulCurrentSecureCounter;
         ulLastNonSecureCounter = ulNonSecureCounter[ 0 ];
 
-        sprintf( ucBuf, "Secure count: %d\r\n", ulCurrentSecureCounter );
+        sprintf( ucBuf, "Secure count: %d", ulCurrentSecureCounter );
         vLogPrint( xQueue, ucBuf );
 
         /* Wait for a second. */

@@ -16,6 +16,8 @@
 #include "board.h"
 #include "log.h"
 
+#define pdTICKS_TO_MS( xTimeInTicks )    ( ( ( TickType_t ) xTimeInTicks * ( TickType_t ) 1000U ) / ( TickType_t ) configTICK_RATE_HZ )
+
 QueueHandle_t xLogQueueHandle = NULL;
 static bool bLogFlag;
 static StaticQueue_t xLogQueue;
@@ -61,6 +63,8 @@ void prvLogTask( void *prvParameters )
 {
     LogMessage_t xLogMessageRx;
     QueueHandle_t xQueue = ( QueueHandle_t )prvParameters;
+    char cBuf[ 256 ];
+    uint32_t uiMTime;
 
     bLogFlag = true;
     for( ; ; ) 
@@ -79,9 +83,11 @@ void prvLogTask( void *prvParameters )
             /* xLogMessage now contains the received data. */
             if ( bLogFlag )
             {
-                printf( "UART1: %d bytes transmitted.\n", nrf_uart_tx( NRF_UARTE1_NS, xLogMessageRx.cData, strlen( xLogMessageRx.cData ) ) );
+                uiMTime = pdTICKS_TO_MS( xLogMessageRx.uiTicks );
+                sprintf( cBuf, "Time:\t\t%d.%d%d%d s, Message:\t%s\r\n", uiMTime / 1000, ( uiMTime % 1000 ) / 100, ( uiMTime % 100 ) / 10, uiMTime % 10, xLogMessageRx.cData );
+                nrf_uart_tx( NRF_UARTE1_NS, cBuf, strlen( cBuf ) );
             }
-            printf( "Time: %d.%d%d%d s, Message: %s\n", xLogMessageRx.uiTime / 1000, ( xLogMessageRx.uiTime % 1000 ) / 100, ( xLogMessageRx.uiTime % 100 ) / 10, xLogMessageRx.uiTime % 10, xLogMessageRx.cData );
+            printf( "%s", cBuf );
         } 
     }
 }
@@ -98,7 +104,7 @@ void vLogPrint( QueueHandle_t xQueue, char *pcLogMessage )
 {
     LogMessage_t xLogMessageTx;
 
-    xLogMessageTx.uiTime = xTaskGetTickCount();
+    xLogMessageTx.uiTicks = xTaskGetTickCount();
     strcpy( xLogMessageTx.cData, pcLogMessage );
     if ( xQueueSend( xQueue, &xLogMessageTx, pdMS_TO_TICKS( 100 ) ) != pdPASS )
     {

@@ -63,13 +63,13 @@ static void prvBlinkyTask( void * pvParameters )
     char ucBuf[ LOG_MSG_MAX ];
     QueueHandle_t xQueue = ( QueueHandle_t )pvParameters;
 
-    vLogPrint( xQueue, "Blinky\r\n" );
+    vLogPrint( xQueue, "Blinky task started" );
 
     /* Start LEDs */
     for ( i = 0; ; i = ( i + 1 ) % 4 )
     {
         /* This task will blink the LEDs */
-        sprintf( ucBuf, "LED #%d\r\n", i );
+        sprintf( ucBuf, "LED #%d", i );
         vLogPrint( xQueue, ucBuf );
         nrf_gpio_out_toggle( i + 2 );
         vTaskDelay( pdMS_TO_TICKS( 1000 ) );

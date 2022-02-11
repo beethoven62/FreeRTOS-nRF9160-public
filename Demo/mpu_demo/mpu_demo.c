@@ -89,7 +89,7 @@ static void prvROAccessTask( void* pvParameters )
     uint8_t ucVal;
     QueueHandle_t xQueue = ( QueueHandle_t )pvParameters;
 
-    vLogPrint( xQueue, "MPU RO Access Task\r\n" );
+    vLogPrint( xQueue, "MPU RO access task started" );
 
     for( ; ; )
     {
@@ -186,7 +186,7 @@ static void prvROAccessTask( void* pvParameters )
             configASSERT( ucROTaskFaultTracker[ 0 ] == 0 );
         }
         #endif /* configTOTAL_MPU_REGIONS == 16 */
-        vLogPrint( xQueue, "MPU RO access task writing.\r\n" );
+        vLogPrint( xQueue, "MPU RO access task writing" );
 
         /* Wait for a second. */
         vTaskDelay( pdMS_TO_TICKS( 1000 ) );
@@ -198,7 +198,7 @@ static void prvRWAccessTask( void* pvParameters )
 {
     QueueHandle_t xQueue = ( QueueHandle_t )pvParameters;
 
-    vLogPrint( xQueue, "MPU RW Access Task\r\n" );
+    vLogPrint( xQueue, "MPU RW access task started" );
 
     for( ; ; )
     {
@@ -218,7 +218,7 @@ static void prvRWAccessTask( void* pvParameters )
             ucSharedMemory8[ 0 ] = 0;
         }
         #endif /* configTOTAL_MPU_REGIONS == 16 */
-        vLogPrint( xQueue, "MPU RW access task writing.\r\n" );
+        vLogPrint( xQueue, "MPU RW access task writing" );
 
         /* Wait for a second. */
         vTaskDelay( pdMS_TO_TICKS( 1000 ) );

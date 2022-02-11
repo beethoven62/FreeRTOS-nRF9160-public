@@ -112,7 +112,7 @@ static void prvCreateTasks( void )
 
     /* Create debug interface tasks */
     vStartLogTask();
-    //vStartCLITask();
+    vStartCLITask();
 
     /* Create tasks for the TZ Demo. */
     vStartTZDemo();
