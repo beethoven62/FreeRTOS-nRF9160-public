@@ -11,6 +11,7 @@
 
 /* Device includes. */
 #include <nrf.h>
+#include <nrfx_uarte.h>
 
 /* Other includes */
 #include "board.h"
@@ -65,6 +66,7 @@ void prvLogTask( void *prvParameters )
     QueueHandle_t xQueue = ( QueueHandle_t )prvParameters;
     char cBuf[ 256 ];
     TickType_t uiMTime;
+    nrfx_uarte_t uarte = NRFX_UARTE_INSTANCE( 1 );
 
     bLogFlag = true;
     for( ; ; ) 
@@ -85,7 +87,7 @@ void prvLogTask( void *prvParameters )
             {
                 uiMTime = pdTICKS_TO_MS( xLogMessageRx.uiTicks );
                 sprintf( cBuf, "Time:\t\t%d.%d%d%d s, Message:\t%s\r\n", uiMTime / 1000, ( uiMTime % 1000 ) / 100, ( uiMTime % 100 ) / 10, uiMTime % 10, xLogMessageRx.cData );
-                nrf_uart_tx( NRF_UARTE1_NS, cBuf, strlen( cBuf ) );
+                nrfx_uarte_tx( &uarte, ( uint8_t* )cBuf, strlen( cBuf ) );
             }
             printf( "%s", cBuf );
         } 

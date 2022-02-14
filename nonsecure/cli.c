@@ -10,6 +10,7 @@
 
 /* Device includes. */
 #include <nrf.h>
+#include <nrfx_uarte.h>
 
 /* Other includes */
 #include "board.h"
@@ -58,12 +59,13 @@ void prvCLITask( void *pvParameters )
     uint32_t nbytes;
     char cByte, cBuf[ LOG_MSG_MAX ];
     QueueHandle_t xQueue = ( QueueHandle_t )pvParameters;
+    nrfx_uarte_t uarte = NRFX_UARTE_INSTANCE( 1 );
 
     vLogPrint( xQueue, "CLI task started" );
 
     for( ; ; ) 
     {
-        if ( ( nbytes = nrf_uart_rx( NRF_UARTE1_NS, &cByte, 1 ) ) > 0 )
+        if ( ( nrfx_uarte_rx( &uarte, ( uint8_t* )&cByte, 1 ) == NRFX_SUCCESS ) )
         {
             sprintf( cBuf, "Received: %s", &cByte );
             vLogPrint( xQueue, cBuf );
