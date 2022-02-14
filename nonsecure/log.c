@@ -16,7 +16,7 @@
 #include "board.h"
 #include "log.h"
 
-#define pdTICKS_TO_MS( xTimeInTicks )    ( ( ( TickType_t ) xTimeInTicks * ( TickType_t ) 1000U ) / ( TickType_t ) configTICK_RATE_HZ )
+#define pdTICKS_TO_MS( xTimeInTicks )    ( TickType_t )( ( uint64_t )( ( TickType_t ) xTimeInTicks * ( TickType_t ) 1000U ) / ( TickType_t ) configTICK_RATE_HZ )
 
 QueueHandle_t xLogQueueHandle = NULL;
 static bool bLogFlag;
@@ -64,7 +64,7 @@ void prvLogTask( void *prvParameters )
     LogMessage_t xLogMessageRx;
     QueueHandle_t xQueue = ( QueueHandle_t )prvParameters;
     char cBuf[ 256 ];
-    uint32_t uiMTime;
+    TickType_t uiMTime;
 
     bLogFlag = true;
     for( ; ; ) 
