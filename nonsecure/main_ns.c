@@ -33,12 +33,16 @@
 
 /* Device includes. */
 #include <nrf.h>
+#include <nrf_modem.h>
+#include <nrf_modem_platform.h>
+#include <nrfx_ipc.h>
 #include "board.h"
 
 /* Task includes. */
 #include "log.h"
 #include "blinky.h"
 #include "cli.h"
+#include "modem.h"
 /*-----------------------------------------------------------*/
 
 /* Initialize the MPU symbols needed by the port code. */
@@ -111,6 +115,9 @@ static void prvCreateTasks( void )
     /* Create debug interface tasks */
     vStartLogTask();
     vStartCLITask();
+
+    /* Initialize LTE modem */
+    vStartModemTask();
 
     /* Create task for the Blinky Demo. */
     vStartBlinkyDemo();

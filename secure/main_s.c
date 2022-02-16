@@ -138,6 +138,8 @@ static void prvSetupSPU( void )
 
   /* Configure non-secure peripherals */
   config_nonsecure_peripheral( NRF_P0_NS );
+  config_nonsecure_peripheral( NRF_IPC_NS );
+  config_nonsecure_peripheral( NRF_POWER_NS );
 
   for ( rgn = 0; rgn < 32; rgn++ )
   {

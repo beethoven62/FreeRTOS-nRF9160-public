@@ -6,9 +6,14 @@
    #include <nrf.h>
    #include "errno.h"
 
+   #include "FreeRTOS.h"
+   #include "task.h"
+
    #define TRACE_IRQ          EGU2_IRQn
    #define TRACE_IRQ_PRIORITY 6
    #define TRACE_IRQ_HANDLER  EGU2_IRQHandler
+
+   #define pdTICKS_TO_MS( xTimeInTicks )    ( TickType_t )( ( uint64_t )( ( TickType_t ) xTimeInTicks * ( TickType_t ) 1000U ) / ( TickType_t ) configTICK_RATE_HZ )
 
    void read_task_create(void)
    {
@@ -31,6 +36,38 @@
        // Initialize trace medium used in the nrf_modem_os_trace_put function.
    }
 
+   void *nrf_modem_os_shm_tx_alloc(size_t bytes)
+   {
+      return nrf_modem_os_alloc(bytes);
+   }
+
+   void nrf_modem_os_shm_tx_free(void *mem)
+   {
+      nrf_modem_os_free(mem);
+   }
+
+   void *nrf_modem_os_alloc(size_t bytes)
+   {
+       void* ptr = NULL;
+
+       if(bytes > 0)
+       {
+           // We simply wrap the FreeRTOS call into a standard form
+           ptr = pvPortMalloc(bytes);
+       } // else NULL if there was an error
+
+       return ptr;
+   }
+
+   void nrf_modem_os_free(void *mem)
+   {
+      if(mem)
+      {
+         // We simply wrap the FreeRTOS call into a standard form
+         vPortFree(mem);
+      }
+   }
+
    int32_t nrf_modem_os_timedwait(uint32_t context, int32_t * timeout)
    {
        // Return remaining time by reference in timeout parameter,
@@ -38,6 +75,30 @@
        // Else return NRF_ETIMEDOUT if timeout has triggered.
        // A blind return value of 0 will make all Modem library operations
        // always block.
+       //return 0;
+
+       static int64_t start = -1, remaining;
+
+       if ( *timeout < 0 )
+       {
+           start = -1;
+           return 0;
+       }
+
+       if ( start < 0 )
+       {
+           start = pdTICKS_TO_MS( xTaskGetTickCount() );
+       }
+
+       remaining = *timeout - ( pdTICKS_TO_MS( xTaskGetTickCount() ) - start );
+       *timeout = remaining > 0 ? remaining : 0;
+
+       if ( *timeout == 0 )
+       {
+           start = -1;
+           return NRF_ETIMEDOUT;
+       }
+
        return 0;
    }
 
@@ -54,7 +115,7 @@
        NVIC_ClearPendingIRQ(NRF_MODEM_APPLICATION_IRQ);
    }
 
-   void NRF_MODEM_APPLCAITON_IRQ_HANDLER(void) {
+   void NRF_MODEM_APPLICATION_IRQ_HANDLER(void) {
        nrf_modem_os_application_irq_handler();
    }
 
