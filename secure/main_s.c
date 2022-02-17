@@ -94,7 +94,7 @@ int main(void)
     /* Non-secure software does not return, this code is not executed. */
     for( ; ; )
     {
-            /* Should not reach here. */
+        /* Should not reach here. */
     }
 }
 /*-----------------------------------------------------------*/
@@ -124,79 +124,93 @@ static void prvBootNonSecure( uint32_t ulNonSecureStartAddress )
 
 static void prvSetupSPU( void )
 {
-  uint16_t rgn;
+    uint16_t rgn;
 
-  /* Configure non-secure memory */
-  for ( rgn = mainNONSECURE_APP_START_ADDRESS / SPU_FLASHREGION_SIZE; rgn < SPU_NUM_REGIONS; rgn++ )
-  {
-    nrf_spu_flashregion_clear(rgn, SPU_FLASHREGION_PERM_SECATTR_Msk);
-   }
-  for ( rgn = ( mainNONSECURE_RAM_START_ADDRESS & RAM_ADDRESS_MASK ) / SPU_RAMREGION_SIZE; rgn < SPU_NUM_REGIONS; rgn++ )
-  {
-    nrf_spu_ramregion_clear( rgn, SPU_RAMREGION_PERM_SECATTR_Msk );
-  }
+    /* Configure non-secure flash memory */
+    for ( rgn = mainNONSECURE_APP_START_ADDRESS / SPU_FLASHREGION_SIZE; rgn < SPU_NUM_REGIONS; rgn++ )
+    {
+        nrf_spu_flashregion_clear(rgn, SPU_FLASHREGION_PERM_SECATTR_Msk);
+    }
 
-  /* Configure non-secure peripherals */
-  config_nonsecure_peripheral( NRF_P0_NS );
-  config_nonsecure_peripheral( NRF_IPC_NS );
-  config_nonsecure_peripheral( NRF_POWER_NS );
+    /* Configure non-secure RAM memory */
+    for ( rgn = ( mainNONSECURE_RAM_START_ADDRESS & RAM_ADDRESS_MASK ) / SPU_RAMREGION_SIZE; rgn < SPU_NUM_REGIONS; rgn++ )
+    {
+        nrf_spu_ramregion_clear( rgn, SPU_RAMREGION_PERM_SECATTR_Msk );
+    }
 
-  for ( rgn = 0; rgn < 32; rgn++ )
-  {
-    nrf_spu_gpio_clear( rgn );
-  }
+    /* Configure non-secure peripherals */
+    config_nonsecure_peripheral( NRF_IPC_NS );
+    config_nonsecure_peripheral( NRF_POWER_NS );
+    config_nonsecure_peripheral( NRF_CLOCK_NS );
+    config_nonsecure_peripheral( NRF_RTC1_NS );
+    config_nonsecure_peripheral( NRF_IPC_NS );
+    config_nonsecure_peripheral( NRF_NVMC_NS );
+    config_nonsecure_peripheral( NRF_VMC_NS );
+    config_nonsecure_peripheral( NRF_P0_NS );
+    config_nonsecure_peripheral( NRF_GPIOTE1_NS );
+    config_nonsecure_peripheral( NRF_UARTE1_NS );
+    config_nonsecure_peripheral( NRF_UARTE2_NS );
+    config_nonsecure_peripheral( NRF_EGU1_NS );
+    config_nonsecure_peripheral( NRF_EGU2_NS );
+    config_nonsecure_peripheral( NRF_FPU_NS );
+    config_nonsecure_peripheral( NRF_TWIM2_NS );
+    config_nonsecure_peripheral( NRF_SPIM3_NS );
+    config_nonsecure_peripheral( NRF_TIMER0_NS );
 
-  config_nonsecure_peripheral( NRF_UARTE1_NS );
-  config_nonsecure_peripheral( NRF_UARTE2_NS );
+    /* Interrupts that target non-secure state */
 
-  /* Configure non-secure callable functions */
-  nrf_spu_nsc( NSC_FUNCTION_ADDRESS );
+
+    /* Configure pins */
+    for ( rgn = 0; rgn < 32; rgn++ )
+    {
+        nrf_spu_gpio_clear( rgn );
+    }
 }
 
 void nrf_spu_flashregion_set( uint16_t region, uint32_t flags )
 {
-  NRF_SPU_S->FLASHREGION[region].PERM |= flags;
+    NRF_SPU_S->FLASHREGION[region].PERM |= flags;
 }
 
 void nrf_spu_flashregion_clear( uint16_t region, uint32_t flags )
 {
-  NRF_SPU_S->FLASHREGION[region].PERM &= ~flags;
+    NRF_SPU_S->FLASHREGION[region].PERM &= ~flags;
 }
 
 void nrf_spu_ramregion_set( uint16_t region, uint32_t flags )
 {
-  NRF_SPU_S->RAMREGION[region].PERM |= flags;
+    NRF_SPU_S->RAMREGION[region].PERM |= flags;
 }
 
 void nrf_spu_ramregion_clear( uint16_t region, uint32_t flags )
 {
-  NRF_SPU_S->RAMREGION[region].PERM &= ~flags;
+    NRF_SPU_S->RAMREGION[region].PERM &= ~flags;
 }
 
 void nrf_spu_gpio_set( uint16_t id )
 {
-  NRF_SPU_S->GPIOPORT[0].PERM |= ( 1 << id );
+    NRF_SPU_S->GPIOPORT[0].PERM |= ( 1 << id );
 }
 
 void nrf_spu_gpio_clear( uint16_t id )
 {
-  NRF_SPU_S->GPIOPORT[0].PERM &= ~( 1 << id );
+    NRF_SPU_S->GPIOPORT[0].PERM &= ~( 1 << id );
 }
 
 void nrf_spu_periph_set( uint16_t id, uint32_t flags )
 {
-  NRF_SPU_S->PERIPHID[id].PERM |= flags;
+    NRF_SPU_S->PERIPHID[id].PERM |= flags;
 }
 
 void nrf_spu_periph_clear( uint16_t id, uint32_t flags )
 {
-  NRF_SPU_S->PERIPHID[id].PERM &= ~flags;
+    NRF_SPU_S->PERIPHID[id].PERM &= ~flags;
 }
 
 void nrf_spu_nsc( uint32_t address )
 {
-  NRF_SPU_S->FLASHNSC[0].REGION = address / SPU_FLASHREGION_SIZE;
-  NRF_SPU_S->FLASHNSC[0].SIZE = SPU_NSCREGION_SIZE;
+    NRF_SPU_S->FLASHNSC[0].REGION = address / SPU_FLASHREGION_SIZE;
+    NRF_SPU_S->FLASHNSC[0].SIZE = SPU_NSCREGION_SIZE;
 }
 
 void config_nonsecure_peripheral( void *peripheral )
@@ -204,5 +218,7 @@ void config_nonsecure_peripheral( void *peripheral )
     uint32_t id = ( ( uint32_t )peripheral >> 12 ) & 0x7f;
 
     nrf_spu_periph_clear( id, SPU_PERIPHID_PERM_SECATTR_Msk );
+    NVIC->ITNS[ id >> 5 ] |= 1 << ( id % 32 );
+    NVIC->ICER[ id >> 5 ] = 1 << ( id % 32 );
 }
 /*-----------------------------------------------------------*/
