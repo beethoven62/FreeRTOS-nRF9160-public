@@ -61,6 +61,8 @@ void vStartModemTask( void )
 
 void prvModemTask( void* pvParameters )
 {
+    int32_t error;
+    char cBuf[ 32 ];
     QueueHandle_t xQueue = ( QueueHandle_t )pvParameters;
     nrf_modem_init_params_t modem =
     {
@@ -78,9 +80,14 @@ void prvModemTask( void* pvParameters )
     NVIC_SetPriority(NRF_MODEM_NETWORK_IRQ, NRF_MODEM_NETWORK_IRQ_PRIORITY);
     NVIC_ClearPendingIRQ(NRF_MODEM_NETWORK_IRQ);
 
-    if ( nrf_modem_init( &modem, NORMAL_MODE) < 0 )
+    if ( ( error = nrf_modem_init( &modem, NORMAL_MODE) ) < 0 )
     {
-        vLogPrint( xQueue, "Modem initialization failed." );
+        sprintf( cBuf, "Modem initialization failed: %d.", error );
+        vLogPrint( xQueue, cBuf );
+    }
+    else
+    {
+        vLogPrint( xQueue, "Modem initialization complete." );
     }
 
     for( ; ; )

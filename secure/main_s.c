@@ -138,6 +138,12 @@ static void prvSetupSPU( void )
         nrf_spu_ramregion_clear( rgn, SPU_RAMREGION_PERM_SECATTR_Msk );
     }
 
+    /* Configure pins */
+    for ( rgn = 0; rgn < 32; rgn++ )
+    {
+        nrf_spu_gpio_clear( rgn );
+    }
+
     /* Configure non-secure peripherals */
     config_nonsecure_peripheral( NRF_CLOCK_NS );
     config_nonsecure_peripheral( NRF_RTC1_NS );
@@ -155,12 +161,6 @@ static void prvSetupSPU( void )
     config_nonsecure_peripheral( NRF_TWIM2_NS );
     config_nonsecure_peripheral( NRF_SPIM3_NS );
     config_nonsecure_peripheral( NRF_TIMER0_NS );
-
-    /* Configure pins */
-    for ( rgn = 0; rgn < 32; rgn++ )
-    {
-        nrf_spu_gpio_clear( rgn );
-    }
 
     /* Configure non-secure callable functions */
     nrf_spu_nsc( NSC_FUNCTION_ADDRESS );
