@@ -14,10 +14,9 @@
 #include <nrfx_uarte.h>
 
 /* Other includes */
+#include "defs.h"
 #include "board.h"
 #include "log.h"
-
-#define pdTICKS_TO_MS( xTimeInTicks )    ( TickType_t )( ( uint64_t )( ( TickType_t ) xTimeInTicks * ( TickType_t ) 1000U ) / ( TickType_t ) configTICK_RATE_HZ )
 
 QueueHandle_t xLogQueueHandle = NULL;
 static bool bLogFlag;
