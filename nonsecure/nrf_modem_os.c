@@ -116,21 +116,21 @@
            else
            {
                *timeout = 0;
-               //vTimerSetTimerID( xModemTimer, ( void* )0 );
+               vTimerSetTimerID( xModemTimer, ( void* )0 );
            }
        }
        else
        {
-           TickType_t x = xTimerGetExpiryTime( xModemTimer ) - xTaskGetTickCount();
-           *timeout = ( int32_t )( pdTICKS_TO_MS( xTimerGetExpiryTime( xModemTimer ) ) - pdTICKS_TO_MS( xTaskGetTickCount() ) ) / 1000;
+           *timeout = ( int32_t )( pdTICKS_TO_MS( xTimerGetExpiryTime( xModemTimer ) ) - pdTICKS_TO_MS( xTaskGetTickCount() ) + 500 ) / 1000;
            *timeout = *timeout > 0 ? *timeout : 0;
        }
-
+       
        if ( *timeout == 0 )
        {
            return NRF_ETIMEDOUT;
        }
 
+       vPortYield();
        return 0;
    }
 
@@ -171,4 +171,5 @@
 
    void vModemTimerCallback( TimerHandle_t xTimer )
    {
+       vTimerSetTimerID( xTimer, ( void* )2 );
    }
