@@ -77,8 +77,8 @@ void prvModemTask( void* pvParameters )
 
     vLogPrint( xQueue, "Modem task started" );
 
-    NVIC_SetPriority(NRF_MODEM_NETWORK_IRQ, NRF_MODEM_NETWORK_IRQ_PRIORITY);
-    NVIC_ClearPendingIRQ(NRF_MODEM_NETWORK_IRQ);
+    NVIC_SetPriority( NRF_MODEM_NETWORK_IRQ, NRF_MODEM_NETWORK_IRQ_PRIORITY );
+    NVIC_ClearPendingIRQ( NRF_MODEM_NETWORK_IRQ );
 
     if ( ( error = nrf_modem_init( &modem, NORMAL_MODE) ) < 0 )
     {
