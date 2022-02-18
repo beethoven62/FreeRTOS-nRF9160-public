@@ -62,7 +62,7 @@ void vStartModemTask( void )
 void prvModemTask( void* pvParameters )
 {
     int32_t error;
-    char cBuf[ 32 ];
+    char cBuf[ LOG_MSG_MAX ];
     QueueHandle_t xQueue = ( QueueHandle_t )pvParameters;
     nrf_modem_init_params_t modem =
     {
@@ -82,7 +82,7 @@ void prvModemTask( void* pvParameters )
 
     if ( ( error = nrf_modem_init( &modem, NORMAL_MODE) ) < 0 )
     {
-        sprintf( cBuf, "Modem initialization failed: %d.", error );
+        sprintf( cBuf, "Modem initialization failed: %d", error );
         vLogPrint( xQueue, cBuf );
     }
     else

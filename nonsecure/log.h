@@ -5,7 +5,7 @@
 #include "queue.h"
 
 #define LOG_QUEUE_LEN   ( 5 )
-#define LOG_MSG_MAX     ( 32 )
+#define LOG_MSG_MAX     ( 128 )
 
 /* Define the stucture of the log message that will be queued */
 typedef struct LogMessage
