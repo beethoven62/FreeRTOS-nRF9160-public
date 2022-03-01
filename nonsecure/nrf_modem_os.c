@@ -1,4 +1,5 @@
 /* Modem includes */
+#include <nrf_modem.h>
 #include <nrf_modem_os.h>
 #include <nrf_errno.h>
 #include <nrf_modem_platform.h>
@@ -13,11 +14,16 @@
 #include "task.h"
 #include "timers.h"
 
-#define TRACE_IRQ          EGU2_IRQn
-#define TRACE_IRQ_PRIORITY 6
-#define TRACE_IRQ_HANDLER  EGU2_IRQHandler
+/* Other includes */
+#include "defs.h"
 
-#define pdTICKS_TO_MS( xTimeInTicks )    ( uint32_t )( ( uint64_t )( ( TickType_t ) xTimeInTicks * ( TickType_t ) 1000U ) / ( TickType_t ) configTICK_RATE_HZ )
+#define NRF_MODEM_APPLICATION_IRQ           EGU1_IRQn
+#define NRF_MODEM_APPLICATION_IRQ_PRIORITY  6
+#define NRF_MODEM_APPLICATION_IRQ_HANDLER   EGU1_IRQHandler
+
+#define TRACE_IRQ                           EGU2_IRQn
+#define TRACE_IRQ_PRIORITY                  6
+#define TRACE_IRQ_HANDLER                   EGU2_IRQHandler
 
 static TimerHandle_t xModemTimer;
 void vModemTimerCallback( TimerHandle_t xTimer );
@@ -156,7 +162,7 @@ void nrf_modem_os_application_irq_clear( void )
 
 void NRF_MODEM_APPLICATION_IRQ_HANDLER( void )
 {
-    nrf_modem_os_application_irq_handler();
+    nrf_modem_application_irq_handler();
 }
 
 void nrf_modem_os_trace_irq_set( void )
@@ -171,7 +177,7 @@ void nrf_modem_os_trace_irq_clear( void )
 
 void TRACE_IRQ_HANDLER( void )
 {
-    nrf_modem_os_trace_irq_handler();
+    nrf_modem_trace_irq_handler();
 }
 
 int32_t nrf_modem_os_trace_put( const uint8_t * const p_buffer, uint32_t buf_len )
@@ -184,4 +190,24 @@ int32_t nrf_modem_os_trace_put( const uint8_t * const p_buffer, uint32_t buf_len
 void vModemTimerCallback( TimerHandle_t xTimer )
 {
     vTimerSetTimerID( xTimer, ( void* )2 );
+}
+
+void nrf_modem_os_busywait( int32_t usec )
+{
+    vTaskDelay( pdMS_TO_TICKS( usec / 1000 ) );
+}
+
+bool nrf_modem_os_is_in_isr( void )
+{
+    /*
+     * TODO: need to read interrupt flag.
+     * So we can use it here.
+     */
+
+    return false;
+}
+
+int nrf_modem_os_sem_init( void **arg, unsigned int initial_count, unsigned int limit )
+{
+    return 0;
 }

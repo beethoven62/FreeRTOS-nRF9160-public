@@ -9,6 +9,131 @@ Changelog
 
 All notable changes to this project are documented in this file.
 
+nrf_modem 1.5.2
+***************
+
+* Added :c:func:`nrf_modem_os_trace_irq_enable` and :c:func:`nrf_modem_os_trace_irq_disable` functions.
+* Added support for calling :c:func:`nrf_modem_trace_processed_callback` from a thread.
+
+nrf_modem 1.5.1
+***************
+
+* Fixed a bug where :c:func:`nrf_modem_trace_processed_callback` could crash in some cases.
+
+nrf_modem 1.5.0
+***************
+
+* Added support for deferred processing of modem traces.
+  Introduced the :c:func:`nrf_modem_trace_processed_callback` function that the application must call after it has processed a trace received in :c:func:`nrf_modem_os_trace_put`.
+* It is now possible to unset the AT notification handler by passing NULL to :c:func:`nrf_modem_at_notif_handler_set`.
+* The number of required semaphores is now exported in :file:`nrf_modem_os.h`.
+* Removed the AT socket.
+* Removed the DFU socket.
+* Fixed a bug where :c:func:`nrf_getsockopt` do not truncate the socket option as intended when the buffer provided was too small.
+* Fixed a bug where closing a socket while another thread was in a :c:func:`recv` operation on the same socket would result in a crash.
+* Fixed a bug in the delta DFU interface where the :c:func:`nrf_modem_delta_dfu_offset` call returns an unexpected error code in some cases.
+
+nrf_modem 1.4.1
+***************
+
+* Fixed a bug in :c:func:`nrf_send` which could result in the function incorrectly returning -1 and setting the errno to ``NRF_EINPROGRESS``.
+
+nrf_modem 1.4.0
+***************
+
+* The PDN socket has been removed.
+* The GNSS socket has been removed.
+* nrf_errno errno values have been aligned with those of newlibc.
+* The :ref:`Modem API <nrf_modem_api>` (:file:`nrf_modem.h`) has been updated to return negative errno values on error.
+* The :ref:`Full Modem DFU API <nrf_modem_full_dfu_api>` (:file:`nrf_modem_full_dfu.h`) has been updated to return negative errno values on error.
+* The :ref:`GNSS API <nrf_modem_gnss_api>` (:file:`nrf_modem_gnss.h`) has been updated to return negative errno values on error.
+* The :c:func:`nrf_modem_gnss_init` and :c:func:`nrf_modem_gnss_deinit` functions have been removed.
+* Added the GNSS velocity estimate validity bit ``NRF_MODEM_GNSS_PVT_FLAG_VELOCITY_VALID``.
+* Added the GNSS delete bitmask ``NRF_MODEM_GNSS_DELETE_GPS_TOW_PRECISION`` for time-of-week precision estimate.
+* Added support for several new fields in the GNSS PVT notification.
+* Added support for retrieving GNSS A-GPS data expiry.
+* Added the :c:func:`nrf_modem_at_cmd_filter_set` function to set a callback for custom AT commands.
+* Fixed a bug in :c:func:`nrf_modem_at_cmd_async` which could result in the wrong response being returned, or a bad memory access.
+* The application can no longer specify the APN to be used with a socket using the ``NRF_SO_BINDTODEVICE`` socket option.
+* The application can no longer specify the APN to be used for DNS queries using the ``ai_canonname`` field of the input hints structure in :c:func:`nrf_getaddrinfo`.
+* Fixed a potential concurrency issue in :c:func:`nrf_getaddrinfo` that would cause the output ``hints`` structure to contain no address upon successful completion.
+* Fixed a bug in :c:func:`nrf_getsockopt` that would let the function return an incorrect value in case of error when called on TLS and DTLS sockets.
+* Added a parameter to :c:func:`nrf_setdnsaddr` to specify the size of the supplied address.
+* Updated :c:func:`nrf_setdnsaddr` to return -1 and set errno on error.
+* The :c:func:`nrf_modem_os_application_irq_handler` and :c:func:`nrf_modem_os_trace_irq_handler` functions have been renamed to :c:func:`nrf_modem_application_irq_handler` and :c:func:`nrf_modem_trace_irq_handler` respectively, and their definition has been moved to :file:`nrf_modem.h`.
+* Added support for APN rate control feature of modem firmware v1.3.1.
+* The glue layer now defines a few new functions used for logging.
+* An additional version of the library is released, which is capable of outputting logs. A minimal set of logs has been added for this release.
+* All library versions are now released with debugging symbols.
+
+nrf_modem 1.3.0
+***************
+
+* Added new AT interface for AT commands.
+* Added new Delta DFU interface for modem firmware delta updates.
+* The AT socket has been deprecated.
+* The DFU socket has been deprecated.
+* Fixed a bug in :c:func:`nrf_send` for blocking sockets where calling the function very quickly would cause the application to hang up.
+
+nrf_modem 1.2.2
+***************
+
+* Fixed a memory leak in :c:func:`nrf_recv` when reading many packets quickly.
+* Fixed a bug in :c:func:`nrf_getaddrinfo` where the function was not returning the proper protocol suggested by the hints.
+* Fixed a bug in :c:func:`nrf_getaddrinfo` where specifying ``NRF_AF_UNSPEC`` would incorrectly return an error.
+* Fixed a bug in :c:func:`nrf_setsockopt` where the option ``NRF_SO_HOSTNAME`` would incorrectly return an error when the hostname was NULL and optlen was 0.
+* Fixed a bug in :c:func:`nrf_modem_gnss_init` where calling the function would lead to field accuracy speed to always be 0 and to the new GNSS events not working.
+  This issue would occur when GNSS is not enabled in %XSYSTEMMODE and modem functional mode is not online.
+
+nrf_modem 1.2.1
+***************
+
+* Fixed an issue where :c:func:`nrf_getaddrinfo` would set a wrong errno when returning ``NRF_EAI_SYSTEM``.
+* Fixed an issue where the ``NRF_SO_TCP_SRV_SESSTIMEO``, ``NRF_SO_SILENCE_IP_ECHO_REPLY`` and ``NRF_SO_SILENCE_IPV6_ECHO_REPLY`` socket options returned an error when set using :c:func:`nrf_setsockopt`.
+* Renamed the socket option ``NRF_SO_SILENCE_IP_ECHO_REPLY`` to ``NRF_SO_IP_ECHO_REPLY``.
+* Renamed the socket option ``NRF_SO_SILENCE_IPV6_ECHO_REPLY`` to ``NRF_SO_IPV6_ECHO_REPLY``.
+
+nrf_modem 1.2.0
+***************
+
+* Added the new GNSS API.
+* The GNSS socket has been deprecated.
+* Added the ``NRF_SO_TCP_SRV_SESSTIMEO`` socket option to control TCP server timeout.
+* Added the ``NRF_AF_UNSPEC`` address family for :c:func:`nrf_getaddrinfo`.
+* The ``NRF_POLLIN`` flag is now set with ``NRF_POLLHUP`` for stream sockets.
+
+nrf_modem 1.1.0
+***************
+
+* The PDN socket has been deprecated.
+* Added the possibility to specify the PDN ID to bind a socket by using the ``NRF_SO_BINDTODEVICE`` socket option.
+* Added the ``NRF_AI_PDNSERV`` flag for :c:func:`nrf_getaddrinfo` to specify the PDN ID to route a DNS query.
+* Added the ``NRF_SO_SEC_DTLS_HANDSHAKE_TIMEO`` socket option to set the DTLS handshake timeout.
+* Added the ``NRF_SO_SEC_SESSION_CACHE_PURGE`` socket option to purge TLS/DTLS session cache.
+* Updated :c:func:`nrf_connect` to set ``errno`` to ``NRF_ECONNREFUSED`` when failing due to a missing certificate, wrong certificate, or a wrong private key.
+* Updated :c:func:`nrf_getaddrinfo` to return POSIX-compatible error codes from :file:`nrf_gai_error.h`.
+* Fixed a potential concurrency issue in :c:func:`nrf_getaddrinfo`.
+* Fixed the :c:func:`nrf_poll` behavior when ``fd`` is less than zero.
+* Fixed the :c:func:`nrf_poll` behavior when ``nfds`` is zero.
+
+nrf_modem 1.0.3
+***************
+
+* Fixed an issue (introduced in version 1.0.2) where :c:func:`nrf_recv` did not return as soon as the data became available on the socket.
+* Fixed an issue (introduced in version 1.0.2) where :c:func:`nrf_send` did not correctly report the amount of data sent for TLS and DTLS sockets.
+
+nrf_modem 1.0.2
+***************
+
+* Implemented RAI (Release Assistance Indication) support in Modem library.
+* Fixed an issue that leads to the reporting of both ``NRF_POLLIN`` and ``NRF_POLLHUP`` by :c:func:`nrf_poll` when a connection is closed by the peer.
+* Fixed an issue where a :c:func:`nrf_recv` call on a non-blocking socket would not always behave correctly when the ``NRF_MSG_WAITALL`` flag or the ``NRF_MSG_DONTWAIT`` flag was used.
+* Fixed an issue where a blocking :c:func:`nrf_send` could return before sending all the data in some cases.
+* Reduced the Heap memory usage in :c:func:`nrf_recv` by 20 percent when using IPv4.
+* :c:func:`nrf_listen` on a connected socket will now correctly set errno to ``NRF_EINVAL``, instead of ``NRF_EBADF``.
+* :c:func:`nrf_accept` on a non-listening socket will now correctly set errno to ``NRF_EINVAL``, instead of ``NRF_EBADF``.
+* Added support for binding RAW sockets to PDNs.
+
 nrf_modem 1.0.1
 ***************
 
@@ -166,7 +291,7 @@ bsdlib 0.5.0
 ************
 
 * bsd_irrecoverable_handler() has been removed.
-  The application no longer needs to implement it to receive errors during initialization, which are instead reported via bsd_init().
+  The application no longer needs to implement it to receive errors during initialization, which are instead reported through bsd_init().
 * bsd_shutdown() now returns an integer.
 * Added RAW socket support.
 * Added missing AGPS data models.
@@ -236,7 +361,7 @@ bsdlib 0.3.3
 
 Updated library with various changes:
 
-* Bugfix internal to the library solving issue with unresponsive sockets.
+* Bug fix internal to the library solving issue with unresponsive sockets.
 
 bsdlib 0.3.2
 ************
@@ -292,7 +417,7 @@ Updated library with various changes:
   (-nostdlib -nodefaultlibs -nostartfiles -lnosys).
 * Fixed issues with some unresolved symbols internal to the library.
 * Updated API towards bsd_os_timedwait function.
-  The time-out parameter is now an in and out parameter.
+  The timeout parameter is now an in and out parameter.
   The bsd_os implementation is now expected to set the remaining time left of the time-out value in return.
 
 bsdlib 0.2.2
@@ -307,12 +432,12 @@ Updated library with API for setting APN name when doing getaddrinfo request.
 bsdlib 0.2.1
 ************
 
-Updated library with bugfixes:
+Updated library with bug fixes:
 
 * Updated ``nrf_inbuilt_key.h`` with smaller documentation fixes.
-* Bugfix in the ``nrf_inbuilt_key`` API to allow PSK and Identity to be provisioned successfully.
-* Bugfix in the ``nrf_inbuilt_key`` API to allow security tags in the range of 65535 to 2147483647 to be deleted, read, and listed.
-* Bugfix in proprietary trace log.
+* Bug fix in the ``nrf_inbuilt_key`` API to allow PSK and Identity to be provisioned successfully.
+* Bug fix in the ``nrf_inbuilt_key`` API to allow security tags in the range of 65535 to 2147483647 to be deleted, read, and listed.
+* Bug fix in proprietary trace log.
 
 bsdlib 0.2.0
 ************

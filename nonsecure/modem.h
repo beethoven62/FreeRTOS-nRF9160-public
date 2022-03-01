@@ -1,8 +1,8 @@
 #ifndef __MODEM_H__
 #define __MODEM_H__
 
-#define NRF_MODEM_SHMEM_TX_SIZE   0x800
-#define NRF_MODEM_SHMEM_RX_SIZE   0x800
+#define NRF_MODEM_SHMEM_TX_SIZE   0x4000
+#define NRF_MODEM_SHMEM_RX_SIZE   0x4000
 
 /* Create one contiguous memory space for the three buffers required by the modem driver */
 typedef struct {

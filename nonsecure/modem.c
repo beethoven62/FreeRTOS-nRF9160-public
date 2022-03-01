@@ -1,5 +1,7 @@
 /* Standard includes. */
 #include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
 
 /* FreeRTOS includes. */
 #include "FreeRTOS.h"
@@ -9,12 +11,23 @@
 #include <nrf.h>
 #include <nrf_modem.h>
 #include <nrf_modem_platform.h>
+#include <nrf_modem_os.h>
+#include <nrf_modem_at.h>
+#include <nrf_socket.h>
 #include <nrfx_ipc.h>
 
 /* Other includes */
+#include "defs.h"
 #include "board.h"
 #include "log.h"
 #include "modem.h"
+
+/* Local function definitions */
+static const char LTEStatus[] = "AT+CFUN?";
+static bool at_send( int fd, const char* cmd, size_t size );
+static int32_t at_recv( int fd, char *buf, int bufsize );
+static int32_t at_cmd( int fd, const char *cmd, size_t size, char* rsp );
+static void modem_callback(const char *notif);
 
 /* Allocate modem RAM spaces */
 nrf_modem_bufs_t nrf_modem_bufs __attribute__( ( aligned( 32 ) ) );
@@ -61,8 +74,10 @@ void vStartModemTask( void )
 
 void prvModemTask( void* pvParameters )
 {
-    int32_t error;
+    int fd;
+    int32_t status;
     char cBuf[ LOG_MSG_MAX ];
+    char cATBuf[ LC_MAX_READ_LENGTH ];
     QueueHandle_t xQueue = ( QueueHandle_t )pvParameters;
     nrf_modem_init_params_t modem =
     {
@@ -80,14 +95,41 @@ void prvModemTask( void* pvParameters )
     NVIC_SetPriority( NRF_MODEM_NETWORK_IRQ, NRF_MODEM_NETWORK_IRQ_PRIORITY );
     NVIC_ClearPendingIRQ( NRF_MODEM_NETWORK_IRQ );
 
-    if ( ( error = nrf_modem_init( &modem, NORMAL_MODE) ) < 0 )
+    if ( ( status = nrf_modem_init( &modem, NORMAL_MODE) ) < 0 )
     {
-        sprintf( cBuf, "Modem initialization failed: %d", error );
+        sprintf( cBuf, "Modem initialization failed: %d", status );
         vLogPrint( xQueue, cBuf );
     }
     else
     {
         vLogPrint( xQueue, "Modem initialization complete." );
+    }
+
+    nrf_modem_at_notif_handler_set( modem_callback );
+
+    fd = nrf_socket( NRF_AF_INET, NRF_SOCK_DGRAM, NRF_IPPROTO_UDP );
+    if ( fd < 0 )
+    {
+        sprintf( cBuf, "Failed to create socket" );
+        vLogPrint( xQueue, cBuf );
+    }
+    else
+    {
+        sprintf( cBuf, "AT lte socket %d", fd );
+        vLogPrint( xQueue, cBuf );
+        sprintf( cBuf, "Send: %s", LTEStatus );
+        vLogPrint( xQueue, cBuf );
+        status = at_cmd( fd, LTEStatus, strlen( LTEStatus ), cATBuf );
+        if ( status > 0 )
+        {
+            cATBuf[ status ] = '\0';
+            sprintf( cBuf, "Receive: %s", cATBuf );
+            vLogPrint( xQueue, cBuf );
+        }
+        else
+        {
+            vLogPrint( xQueue, "Receive: " );
+        }
     }
 
     for( ; ; )
@@ -99,3 +141,38 @@ void IPC_IRQHandler( void )
 {
     nrfx_ipc_irq_handler();
 }
+
+bool at_send( int fd, const char* cmd, size_t size )
+{
+    uint32_t len;
+
+    len = nrf_send( fd, cmd, size, 0 );
+
+    return len == size;
+}
+
+int32_t at_recv( int fd, char *buf, int bufsize )
+{
+    int len;
+
+    len = nrf_recv( fd, buf, bufsize, 0 );
+
+    return len;
+}
+
+int32_t at_cmd( int fd, const char *cmd, size_t size, char* rsp )
+{
+    uint32_t len = -1;
+
+    if ( at_send( fd, cmd, size ) )
+    {
+        len = at_recv( fd, rsp, LC_MAX_READ_LENGTH );
+    }
+
+    return len;
+}
+
+void modem_callback( const char *notif )
+{
+}
+

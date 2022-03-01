@@ -67,6 +67,7 @@ extern uint32_t SystemCoreClock;
 #define configMINIMAL_SECURE_STACK_SIZE                 ( 1024 )
 #define configMAX_TASK_NAME_LEN                         ( 12 )
 #define configTOTAL_HEAP_SIZE                           ( ( size_t ) ( 50 * 1024 ) )
+#define configAPPLICATION_ALLOCATED_HEAP                0
 
 /* Constants that build features in or out. */
 #define configUSE_MUTEXES                               1

@@ -10,7 +10,7 @@ Library architecture
 The Modem library is the application interface to the nRF9160 modem firmware, which contains a full IP and DTLS/TLS stack as well as GNSS.
 It provides the standard Socket APIs, to facilitate application development and additional APIs to manage the modem and perform full-modem firmware updates.
 
-The library implements a communication interface between the Application and Modem cores on the nRF9160 via the RPC protocol, using the Inter Processor Communication (IPC) peripheral and a shared region of RAM.
+The library implements a communication interface between the Application and Modem cores on the nRF9160 through the RPC protocol, using the Inter Processor Communication (IPC) peripheral and a shared region of RAM.
 
 The following figure shows a simplified Modem library architecture:
 
@@ -32,7 +32,7 @@ The shared memory area can be located anywhere within the first 128 kilobytes of
 
 The application can configure the size and location of these regions.
 The application is responsible for reserving the memory area by setting the values of these parameters before passing them onto the library.
-The library accepts these values as parameters to the :c:func:`nrf_modem_init` function via :c:enum:`nrf_modem_shmem_cfg`.
+The library accepts these values as parameters to the :c:func:`nrf_modem_init` function through :c:enum:`nrf_modem_shmem_cfg`.
 
 .. note::
    The size of the Control area is fixed.
@@ -81,8 +81,7 @@ This area of memory is optional, and the area size can be configured to be zero,
 Library heap
 ************
 
-The Modem library needs to dynamically allocate memory (a heap) for proper functioning.
-This memory is used to store the internal data structures that are used to manage the communication between the application core and the modem core.
+The Modem library dynamically allocates memory during some operations, for example tracing and DNS lookups.
 This memory is never shared with the modem core and hence, it can be located anywhere in the application core's RAM instead of the shared memory regions.
 The library OS abstraction layer defines the following functions to allocate and free up dynamic memory for the library:
 

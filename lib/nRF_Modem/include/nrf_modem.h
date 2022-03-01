@@ -129,7 +129,11 @@ char *nrf_modem_build_version(void);
  * @retval A positive value from @ref nrf_modem_dfu when executing
  *         Modem firmware updates.
  *
- * @retval -1 on error.
+ * @retval -NRF_EFAULT @c init_params is @c NULL.
+ * @retval -NRF_ENOMEM Not enough shared memory for this operation.
+ * @retval -NRF_EPERM The Modem library is already initialized.
+ * @retval -NRF_ETIMEDOUT Modem timed out.
+ * @retval -NRF_EIO IPC State fault or missing root digest.
  */
 int nrf_modem_init(const nrf_modem_init_params_t *init_params,
 		   enum nrf_modem_mode_t mode);
@@ -144,7 +148,8 @@ int nrf_modem_init(const nrf_modem_init_params_t *init_params,
  * the library is shutdown.
  *
  * @retval Zero on success.
- * @retval -1 on error.
+ * @retval -NRF_EPERM The Modem library is not initialized.
+ * @retval -NRF_ENOMEM Not enough shared memory for this operation.
  */
 int nrf_modem_shutdown(void);
 
@@ -154,6 +159,37 @@ int nrf_modem_shutdown(void);
  * @param[in] error The error reason.
  */
 extern void nrf_modem_recoverable_error_handler(uint32_t error);
+
+/**
+ * @brief Application IRQ handler in the modem library.
+ *
+ * Call this function when handling the Application IRQ.
+ */
+void nrf_modem_application_irq_handler(void);
+
+/**
+ * @brief Trace IRQ handler in the modem library.
+ *
+ * Call this function when handling the Trace IRQ.
+ *
+ */
+void nrf_modem_trace_irq_handler(void);
+
+/**
+ * @brief Function to indicate that the application has completed the processing of a trace buffer
+ *
+ * The application shall call this function to let the modem library free the trace memory
+ * pointed to by @p buf. It is the application's responsibility to call this function with
+ * the same parameter values as received in the @ref nrf_modem_os_trace_put function.
+ * Calling this function with incorrect values leads to undefined behavior.
+ *
+ * @param buf Pointer to the memory buffer as received in @ref nrf_modem_os_trace_put
+ * @param len Length of memory buffer as received in @ref nrf_modem_os_trace_put
+ * @retval Zero on success.
+ * @retval -NRF_EINVAL @p buf is @c NULL or an invalid trace buffer
+ * @retval -NRF_EINVAL @p len is too large to be a valid trace length
+ */
+int nrf_modem_trace_processed_callback(const uint8_t *buf, uint32_t len);
 
 #ifdef __cplusplus
 }
