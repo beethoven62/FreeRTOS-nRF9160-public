@@ -54,7 +54,7 @@ static void prvBootNonSecure( uint32_t ulNonSecureStartAddress );
  **********************************************************************************************************************/
 /* Address regions and SPU_S register configuration */
 #define mainNONSECURE_APP_START_ADDRESS         ( 0x00010000U )
-#define mainNONSECURE_RAM_START_ADDRESS         ( 0x20008000U )
+#define mainNONSECURE_RAM_START_ADDRESS         ( 0x20000000U )
 #define NSC_FUNCTION_ADDRESS                    ( 0x0000f000U )
 #define RAM_ADDRESS_MASK                        ( 0x0fffffffU )
 #define SPU_FLASHREGION_SIZE                    ( 0x8000U )
