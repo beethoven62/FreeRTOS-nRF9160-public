@@ -145,9 +145,6 @@
       <file file_name="../lib/nrfx/drivers/src/nrfx_uarte.c" />
       <file file_name="../lib/nrfx/drivers/src/nrfx_ipc.c" />
     </folder>
-    <configuration
-      Name="Debug"
-      arm_linker_check_cmse_import_library_file_name="" />
     <folder Name="FreeRTOS">
       <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/croutine.c" />
       <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/event_groups.c" />
