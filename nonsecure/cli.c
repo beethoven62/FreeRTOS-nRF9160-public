@@ -50,8 +50,13 @@ void vStartCLITask( void )
     };
     xCLITaskParameters.pvParameters = ( void* )xGetLogHandle();
 
+    #if configENABLE_MPU == 1
     /* Create a privileged task. */
     xTaskCreateRestricted(  &( xCLITaskParameters ), NULL );
+    #else
+    /* MPU disabled */
+    xTaskCreate( xCLITaskParameters.pvTaskCode, xCLITaskParameters.pcName, xCLITaskParameters.usStackDepth, xCLITaskParameters.pvParameters, xCLITaskParameters.uxPriority, NULL );
+    #endif
 }
 
 void prvCLITask( void *pvParameters )

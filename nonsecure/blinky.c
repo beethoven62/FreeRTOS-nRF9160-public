@@ -50,8 +50,13 @@ void vStartBlinkyDemo( void )
     };
     xBlinkyTaskParameters.pvParameters = ( void* )xGetLogHandle();
 
+    #if configENABLE_MPU == 1
     /* Create an unprivileged task. */
     xTaskCreateRestricted(  &( xBlinkyTaskParameters ), NULL );
+    #else
+    /* MPU disabled */
+    xTaskCreate( xBlinkyTaskParameters.pvTaskCode, xBlinkyTaskParameters.pcName, xBlinkyTaskParameters.usStackDepth, xBlinkyTaskParameters.pvParameters, xBlinkyTaskParameters.uxPriority, NULL );
+    #endif
 }
 
 /*-----------------------------------------------------------*/

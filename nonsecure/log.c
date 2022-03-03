@@ -55,8 +55,13 @@ void vStartLogTask( void )
     };
     xLogTaskParameters.pvParameters = ( void *)xGetLogHandle();
 
+    #if configENABLE_MPU == 1
     /* Create a privileged task. */
     xTaskCreateRestricted(  &( xLogTaskParameters ), NULL );
+    #else
+    /* MPU disabled */
+    xTaskCreate( xLogTaskParameters.pvTaskCode, xLogTaskParameters.pcName, xLogTaskParameters.usStackDepth, xLogTaskParameters.pvParameters, xLogTaskParameters.uxPriority, NULL );
+    #endif
 }
 
 void prvLogTask( void *prvParameters )

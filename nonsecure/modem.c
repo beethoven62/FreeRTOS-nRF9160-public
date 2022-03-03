@@ -68,8 +68,13 @@ void vStartModemTask( void )
     };
     xModemTaskParameters.pvParameters = ( void* )xGetLogHandle();
 
+    #if configENABLE_MPU == 1
     /* Create an unprivileged task. */
     xTaskCreateRestricted(  &( xModemTaskParameters ), NULL );
+    #else
+    /* MPU disabled */
+    xTaskCreate( xModemTaskParameters.pvTaskCode, xModemTaskParameters.pcName, xModemTaskParameters.usStackDepth, xModemTaskParameters.pvParameters, xModemTaskParameters.uxPriority, NULL );
+    #endif
 }
 
 void prvModemTask( void* pvParameters )
