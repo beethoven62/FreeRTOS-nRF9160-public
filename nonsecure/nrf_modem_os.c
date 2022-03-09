@@ -157,7 +157,7 @@ void nrf_modem_os_application_irq_set( void )
 
 void nrf_modem_os_application_irq_clear( void )
 {
-    NVIC_ClearPendingIRQ(NRF_MODEM_APPLICATION_IRQ);
+    NVIC_ClearPendingIRQ( NRF_MODEM_APPLICATION_IRQ );
 }
 
 void NRF_MODEM_APPLICATION_IRQ_HANDLER( void )
