@@ -101,13 +101,13 @@
       arm_target_interface_type="SWD"
       arm_v8M_has_cmse="Yes"
       c_preprocessor_definitions="NRF_TRUSTZONE_NONSECURE;__SUPPORT_RESET_HALT_AFTER_BTL=0;ARM_MATH_ARMV8MML;NRF9160_XXAA;__NRF_FAMILY;INITIALIZE_USER_SECTIONS;__ARMCC_VERSION;NRFX_UARTE_ENABLED;NRFX_UARTE1_ENABLED;NRFX_IPC_ENABLED"
-      c_user_include_directories="$(SolutionDir)/lib/CMSIS_5/CMSIS/Core/Include;$(SolutionDir)/lib/nRF/Include;$(SolutionDir)/lib/nrfx;$(SolutionDir)/lib/nrfx/drivers/include;$(SolutionDir)/lib/nrfx/templates;$(SolutionDir)/lib/nRF_Modem/include;$(SolutionDir)/lib/FreeRTOS/Source/include;$(SolutionDir)/lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure;$(SolutionDir)/lib/FreeRTOS/Source/portable/GCC/ARM_CM33/non_secure;$(SolutionDir)/Config;$(ProjectDir)"
+      c_user_include_directories="$(SolutionDir)/lib/CMSIS_5/CMSIS/Core/Include;$(SolutionDir)/lib/nRF/Include;$(SolutionDir)/lib/nrfx;$(SolutionDir)/lib/nrfx/drivers/include;$(SolutionDir)/lib/nrfx/templates;$(SolutionDir)/lib/nrfxlib/nrf_modem/include;$(SolutionDir)/lib/FreeRTOS/Source/include;$(SolutionDir)/lib/FreeRTOS/Source/portable/GCC/ARM_CM33/secure;$(SolutionDir)/lib/FreeRTOS/Source/portable/GCC/ARM_CM33/non_secure;$(SolutionDir)/Config;$(ProjectDir)"
       debug_register_definition_file="$(SolutionDir)/lib/nRF/XML/nrf9160_Registers.xml"
       debug_stack_pointer_start="__stack_end__"
       debug_start_from_entry_point_symbol="No"
       debug_target_connection="J-Link"
       gcc_entry_point="Reset_Handler"
-      linker_additional_files="$(SolutionDir)/secure/$(OutDir)/secure_nsc.elf;$(SolutionDir)/lib/nRF_Modem/lib/cortex-m33/hard-float/libmodem.a"
+      linker_additional_files="$(SolutionDir)/secure/$(OutDir)/secure_nsc.elf;$(SolutionDir)/lib/nrfxlib/nrf_modem/lib/cortex-m33/hard-float/libmodem.a"
       linker_memory_map_file="$(ProjectDir)/nRF9160_xxAA_MemoryMap.xml"
       linker_output_format="hex"
       linker_section_placement_file="nRF9160_xxAA_section_placement.xml"
@@ -159,5 +159,7 @@
       <file file_name="$(SolutionDir)/lib/FreeRTOS/Source/portable/MemMang/heap_4.c" />
     </folder>
   </project>
-  <configuration Name="Common" />
+  <configuration
+    Name="Common"
+    post_build_command="$(ToolChain2Dir)/$(GCCTarget)-readelf -a $(OutDir)/$(ProjectName)$(EXE) &gt; $(OutDir)/$(ProjectName)$(EXE).map" />
 </solution>

@@ -1,0 +1,3 @@
+[submodule "lib/nrfxlib"]
+	path = lib/nrfxlib
+	url = https://github.com/nrfconnect/sdk-nrfxlib.git
