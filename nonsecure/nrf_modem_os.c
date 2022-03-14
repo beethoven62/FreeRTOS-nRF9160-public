@@ -211,3 +211,12 @@ int nrf_modem_os_sem_init( void **arg, unsigned int initial_count, unsigned int 
 {
     return 0;
 }
+
+void nrf_modem_os_sem_give( void *arg )
+{
+}
+
+int nrf_modem_os_sem_take( void *arg, int timeout )
+{
+	return 0;
+}
