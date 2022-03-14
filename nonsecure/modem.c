@@ -99,6 +99,7 @@ void prvModemTask( void* pvParameters )
 
     NVIC_SetPriority( NRF_MODEM_NETWORK_IRQ, NRF_MODEM_NETWORK_IRQ_PRIORITY );
     NVIC_ClearPendingIRQ( NRF_MODEM_NETWORK_IRQ );
+    NVIC_EnableIRQ( NRF_MODEM_NETWORK_IRQ );
 
     if ( ( status = nrf_modem_init( &modem, NORMAL_MODE) ) < 0 )
     {
